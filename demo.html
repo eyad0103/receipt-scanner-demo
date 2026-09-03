@@ -1,0 +1,26 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>Receipt Scanner — Demo: Scan → Result → Save</title><style>body{font-family:system-ui;background:#FFFBF5;margin:0;padding:24px;color:#222}h1{font-size:22px}.card{background:#fff;border:1px solid #eee;border-radius:16px;padding:16px;margin:12px 0;box-shadow:0 2px 12px #0001}button{background:#7c3aed;color:#fff;border:0;border-radius:12px;padding:10px 18px;font-weight:700;cursor:pointer}pre{background:#111;color:#0f0;border-radius:12px;padding:12px;overflow:auto;max-height:300px;font-size:12px}img{max-width:100%;border-radius:12px}.row{display:flex;gap:12px;flex-wrap:wrap}.row>div{flex:1;min-width:260px}</style></head><body>
+<h1>Receipt Scanner — Demo: Scan → Result → Save</h1>
+<p>Main feature sample: pick a receipt image → upload to backend → see OCR + parsed total → saved.</p>
+<div class="card"><input type="file" id="f" accept="image/*"/><br/><br/><button onclick="scan()">Scan receipt</button> <span id="st"></span></div>
+<div class="row"><div class="card"><h3>Preview</h3><img id="pv"/></div><div class="card"><h3>What app scanned + saved</h3><pre id="out">No scan yet.</pre></div></div>
+<script>
+const API = location.hostname === 'localhost' || location.hostname === '127.0.0.1' ? 'http://localhost:3000/api' : `http://${location.hostname}:3000/api`;
+let file;
+document.getElementById('f').onchange = e => { file = e.target.files[0]; document.getElementById('pv').src = URL.createObjectURL(file); };
+async function scan(){
+  if(!file) return alert('Pick an image first');
+  document.getElementById('st').textContent = 'Scanning...';
+  const fd = new FormData(); fd.append('image', file);
+  const ocr = localStorage.getItem('ocrProvider') || 'tesseract';
+  try{
+    const r = await fetch(API + '/receipts/upload', { method:'POST', headers:{ 'x-user-id':'user_demo','X-OCR-Provider':ocr }, body: fd });
+    const j = await r.json();
+    document.getElementById('st').textContent = 'Saved: ' + (j.receiptId || j.id || 'ok');
+    const id = j.receiptId || j.id;
+    let detail = j;
+    if(id){ const d = await fetch(API + '/receipts/' + id, { headers:{ 'x-user-id':'user_demo' } }); detail = await d.json(); }
+    document.getElementById('out').textContent = JSON.stringify(detail, null, 2);
+    const saved = JSON.parse(localStorage.getItem('demoSaved') || '[]'); saved.unshift({ at: new Date().toISOString(), id }); localStorage.setItem('demoSaved', JSON.stringify(saved.slice(0,10)));
+  }catch(e){ document.getElementById('st').textContent = 'Error: ' + e.message + ' — is backend on :3000? run run.bat'; }
+}
+</script></body></html>
