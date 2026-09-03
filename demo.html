@@ -1,26 +1,105 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>Receipt Scanner — Demo: Scan → Result → Save</title><style>body{font-family:system-ui;background:#FFFBF5;margin:0;padding:24px;color:#222}h1{font-size:22px}.card{background:#fff;border:1px solid #eee;border-radius:16px;padding:16px;margin:12px 0;box-shadow:0 2px 12px #0001}button{background:#7c3aed;color:#fff;border:0;border-radius:12px;padding:10px 18px;font-weight:700;cursor:pointer}pre{background:#111;color:#0f0;border-radius:12px;padding:12px;overflow:auto;max-height:300px;font-size:12px}img{max-width:100%;border-radius:12px}.row{display:flex;gap:12px;flex-wrap:wrap}.row>div{flex:1;min-width:260px}</style></head><body>
-<h1>Receipt Scanner — Demo: Scan → Result → Save</h1>
-<p>Main feature sample: pick a receipt image → upload to backend → see OCR + parsed total → saved.</p>
-<div class="card"><input type="file" id="f" accept="image/*"/><br/><br/><button onclick="scan()">Scan receipt</button> <span id="st"></span></div>
-<div class="row"><div class="card"><h3>Preview</h3><img id="pv"/></div><div class="card"><h3>What app scanned + saved</h3><pre id="out">No scan yet.</pre></div></div>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Receipt Scanner — Demo</title>
+<style>
+:root{--vio:#7c3aed;--fux:#d946ef;--bg:#FFFBF5;--card:#fff;--ink:#18181b;--mut:#71717a;--ok:#059669;--line:#f1e9ff}
+*{box-sizing:border-box}body{margin:0;font-family:Segoe UI,system-ui,sans-serif;background:var(--bg);color:var(--ink)}
+.hero{background:linear-gradient(135deg,#7c3aed,#d946ef);color:#fff;padding:34px 22px 46px;text-align:center;border-radius:0 0 28px 28px}
+.hero h1{margin:0;font-size:26px;letter-spacing:-.5px}.hero p{opacity:.9;font-size:13px;margin:8px 0 0}
+.steps{display:flex;gap:8px;justify-content:center;margin-top:16px;flex-wrap:wrap}
+.step{font-size:12px;font-weight:700;background:#ffffff2e;padding:6px 14px;border-radius:999px}
+.step.on{background:#fff;color:var(--vio)}
+.wrap{max-width:920px;margin:-24px auto 40px;padding:0 14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:20px;margin:14px 0;box-shadow:0 8px 30px #7c3aed14}
+.drop{border:2px dashed #c4b5fd;border-radius:16px;padding:26px;text-align:center;cursor:pointer;transition:.2s;background:#faf5ff}
+.drop:hover,.drop.over{border-color:var(--vio);background:#f5efff}
+.drop img{max-width:100%;max-height:280px;border-radius:12px;margin-top:12px;box-shadow:0 4px 18px #0002}
+.btn{background:linear-gradient(135deg,var(--vio),var(--fux));color:#fff;border:0;border-radius:14px;padding:13px 30px;font-weight:800;font-size:15px;cursor:pointer;box-shadow:0 6px 20px #7c3aed55;width:100%}
+.btn:disabled{opacity:.5;cursor:wait}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:14px}@media(max-width:640px){.row{grid-template-columns:1fr}}
+.stat{background:#faf5ff;border-radius:14px;padding:12px}.stat small{color:var(--mut);font-size:11px;text-transform:uppercase;letter-spacing:.5px}.stat b{font-size:20px;display:block}
+table{width:100%;border-collapse:collapse;font-size:13px}td,th{padding:8px;border-bottom:1px solid #f4f4f5;text-align:left}th{color:var(--mut);font-size:11px;text-transform:uppercase}
+pre{background:#18181b;color:#a7f3d0;border-radius:12px;padding:12px;font-size:11px;max-height:180px;overflow:auto;white-space:pre-wrap}
+.hist{display:flex;gap:8px;flex-wrap:wrap}.pill{font-size:12px;background:#f4f4f5;border-radius:999px;padding:6px 12px}
+.badge{display:inline-block;font-size:11px;font-weight:800;color:var(--vio);background:#ede9fe;border-radius:999px;padding:3px 12px;margin-bottom:8px}
+.ok{color:var(--ok);font-weight:700}.err{color:#dc2626;font-weight:700}
+.spin{display:inline-block;width:14px;height:14px;border:2px solid #fff;border-top-color:transparent;border-radius:50%;animation:s 1s linear infinite;vertical-align:-2px}@keyframes s{to{transform:rotate(360deg)}}
+footer{text-align:center;color:var(--mut);font-size:12px;padding:20px}
+</style>
+</head>
+<body>
+<div class="hero">
+<h1>Receipt Scanner — Live Demo</h1>
+<p>Main features only: <b>Scan → Result → Save</b> · Engine: Tesseract (fast, offline)</p>
+<div class="steps"><span class="step on" id="s1">1 · Scan</span><span class="step" id="s2">2 · Result</span><span class="step" id="s3">3 · Saved</span></div>
+</div>
+<div class="wrap">
+<div class="card">
+<span class="badge">STEP 1 — SCAN</span>
+<div class="drop" id="drop">Drop receipt image here or click to choose<input type="file" id="f" accept="image/*" hidden/></div>
+<br/><button class="btn" id="go" onclick="scan()">Scan receipt</button>
+<p id="st" style="font-size:13px"></p>
+</div>
+<div class="card" id="resCard" style="display:none">
+<span class="badge">STEP 2 — WHAT THE APP SCANNED</span>
+<div class="row">
+<div class="stat"><small>Merchant</small><b id="rM">–</b></div>
+<div class="stat"><small>Total</small><b id="rT">–</b></div>
+<div class="stat"><small>Date</small><b id="rD" style="font-size:16px">–</b></div>
+<div class="stat"><small>Confidence</small><b id="rC">–</b></div>
+</div>
+<br/><table><thead><tr><th>Item</th><th>Qty</th><th>Total</th></tr></thead><tbody id="rItems"></tbody></table>
+<br/><details><summary style="font-size:12px;color:var(--mut);cursor:pointer">Raw OCR text</summary><pre id="rOcr"></pre></details>
+</div>
+<div class="card" id="saveCard" style="display:none">
+<span class="badge">STEP 3 — SAVED</span>
+<p id="rSaved" class="ok"></p>
+<div class="hist" id="hist"></div>
+</div>
+</div>
+<footer>Receipt Scanner demo · backend :3000 · <span id="conn">checking backend…</span></footer>
 <script>
-const API = location.hostname === 'localhost' || location.hostname === '127.0.0.1' ? 'http://localhost:3000/api' : `http://${location.hostname}:3000/api`;
-let file;
-document.getElementById('f').onchange = e => { file = e.target.files[0]; document.getElementById('pv').src = URL.createObjectURL(file); };
+const API='http://localhost:3000/api';let file;
+const drop=document.getElementById('drop'),fi=document.getElementById('f');
+drop.onclick=()=>fi.click();
+['dragover','dragenter'].forEach(e=>drop.addEventListener(e,ev=>{ev.preventDefault();drop.classList.add('over')}));
+['dragleave','drop'].forEach(e=>drop.addEventListener(e,ev=>{ev.preventDefault();drop.classList.remove('over')}));
+drop.addEventListener('drop',ev=>{setFile(ev.dataTransfer.files[0])});
+fi.onchange=e=>setFile(e.target.files[0]);
+function setFile(f){if(!f)return;file=f;drop.innerHTML='';const im=document.createElement('img');im.src=URL.createObjectURL(f);drop.appendChild(im)}
+function step(n){[1,2,3].forEach(i=>document.getElementById('s'+i).classList.toggle('on',i<=n))}
+async function health(){try{const r=await fetch('http://localhost:3000/health');document.getElementById('conn').textContent=r.ok?'backend connected':'backend down — run run-demo.bat';}catch{document.getElementById('conn').textContent='backend down — run run-demo.bat'}}
+health();setInterval(health,5000);
+function hist(id){const h=JSON.parse(localStorage.getItem('demoSaved')||'[]');if(id){h.unshift({at:new Date().toLocaleString(),id});localStorage.setItem('demoSaved',JSON.stringify(h.slice(0,12)))}document.getElementById('hist').innerHTML=h.map(x=>`<span class="pill">${x.id.slice(0,14)}… · ${x.at}</span>`).join('')||'<span style="font-size:12px;color:#999">nothing saved yet</span>'}
+hist();
 async function scan(){
-  if(!file) return alert('Pick an image first');
-  document.getElementById('st').textContent = 'Scanning...';
-  const fd = new FormData(); fd.append('image', file);
-  const ocr = localStorage.getItem('ocrProvider') || 'tesseract';
-  try{
-    const r = await fetch(API + '/receipts/upload', { method:'POST', headers:{ 'x-user-id':'user_demo','X-OCR-Provider':ocr }, body: fd });
-    const j = await r.json();
-    document.getElementById('st').textContent = 'Saved: ' + (j.receiptId || j.id || 'ok');
-    const id = j.receiptId || j.id;
-    let detail = j;
-    if(id){ const d = await fetch(API + '/receipts/' + id, { headers:{ 'x-user-id':'user_demo' } }); detail = await d.json(); }
-    document.getElementById('out').textContent = JSON.stringify(detail, null, 2);
-    const saved = JSON.parse(localStorage.getItem('demoSaved') || '[]'); saved.unshift({ at: new Date().toISOString(), id }); localStorage.setItem('demoSaved', JSON.stringify(saved.slice(0,10)));
-  }catch(e){ document.getElementById('st').textContent = 'Error: ' + e.message + ' — is backend on :3000? run run.bat'; }
+if(!file)return alert('Choose a receipt image first');
+const go=document.getElementById('go'),st=document.getElementById('st');
+go.disabled=true;go.innerHTML='<span class="spin"></span> Scanning…';step(1);
+try{
+const fd=new FormData();fd.append('image',file);
+const r=await fetch(API+'/receipts/upload',{method:'POST',headers:{'x-user-id':'user_demo','X-OCR-Provider':'tesseract'},body:fd});
+if(!r.ok)throw new Error('upload failed '+(await r.text()).slice(0,120));
+const j=await r.json();const id=j.receiptId||j.id;step(2);
+st.innerHTML='<span class="ok">Uploaded.</span> Reading result…';
+const d=await(await fetch(API+'/receipts/'+id,{headers:{'x-user-id':'user_demo'}})).json();
+document.getElementById('resCard').style.display='block';
+document.getElementById('rM').textContent=d.merchant||'Unknown';
+document.getElementById('rT').textContent=(d.total??'–')+' '+(d.currency||'EGP');
+document.getElementById('rD').textContent=(d.date||'')+' '+(d.time||'');
+document.getElementById('rC').textContent=Math.round((d.confidence||0)*100)+'%';
+document.getElementById('rItems').innerHTML=(d.items||[]).map(i=>`<tr><td>${i.name}</td><td>${i.quantity}</td><td>${i.totalPrice}</td></tr>`).join('')||'<tr><td colspan=3>no items</td></tr>';
+document.getElementById('rOcr').textContent=(d.ocr&&d.ocr.rawText)||'';
+document.getElementById('saveCard').style.display='block';
+document.getElementById('rSaved').textContent='Saved as '+id;
+hist(id);step(3);st.innerHTML='<span class="ok">Done — result shown and saved.</span>';
+document.getElementById('resCard').scrollIntoView({behavior:'smooth'});
+}catch(e){st.innerHTML='<span class="err">Error: '+e.message+'</span>'}
+go.disabled=false;go.textContent='Scan receipt';
 }
-</script></body></html>
+</script>
+</body>
+</html>
