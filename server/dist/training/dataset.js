@@ -30,7 +30,7 @@ function saveExample(ex) {
     ensureDir();
     const all = loadDataset();
     all.push(ex);
-    fs_1.default.writeFileSync(DATA_PATH, JSON.stringify(all.slice(-500), null, 2));
+    fs_1.default.writeFileSync(DATA_PATH, JSON.stringify(all.slice(-20000), null, 2));
 }
 function getProductDictionary() {
     const all = loadDataset();
