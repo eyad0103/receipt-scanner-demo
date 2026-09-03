@@ -2,16 +2,9 @@
 
 Main features only. Pick a receipt image → upload → see OCR + parsed total → saved.
 
-## Download (Releases)
+## No download needed (browsers block .bat)
 
-**Option A — release zip (easiest, no git):**
-Download `receipt-scanner-demo-v1.0.zip` from
-https://github.com/eyad0103/receipt-scanner-demo/releases/tag/v1.0
-→ extract → double-click `run-demo.bat` (starts server + opens demo).
-Or get it with one file: `download-demo.bat` downloads + extracts everything to `F:\receipt-scanner-demo` for you.
-
-**Option B — clone:**
-```
+**Option A — clone (easiest):**
 ```
 git clone https://github.com/eyad0103/receipt-scanner-demo
 ```

@@ -60,9 +60,13 @@ footer{text-align:center;color:var(--mut);font-size:12px;padding:20px}
 <div class="hist" id="hist"></div>
 </div>
 </div>
-<footer>Receipt Scanner demo · backend :3000 · <span id="conn">checking backend…</span></footer>
+<footer>Receipt Scanner demo · backend <input id="be" style="width:220px;font-size:12px;padding:4px 8px;border-radius:8px;border:1px solid #ddd" value="http://localhost:3000"/> <button onclick="saveBe()" style="font-size:12px">set</button> · <span id="conn">checking backend…</span></footer>
 <script>
-const API='http://localhost:3000/api';let file;
+let BACKEND=localStorage.getItem('demoBackend')||'http://localhost:3000';
+try{const q=new URLSearchParams(location.search);if(q.get('api')){BACKEND=q.get('api');localStorage.setItem('demoBackend',BACKEND)}}catch{}
+const API=()=>BACKEND.replace(/\/$/,'')+'/api';let file;
+document.getElementById('be').value=BACKEND;
+function saveBe(){BACKEND=document.getElementById('be').value.trim()||BACKEND;localStorage.setItem('demoBackend',BACKEND);health()}
 const drop=document.getElementById('drop'),fi=document.getElementById('f');
 drop.onclick=()=>fi.click();
 ['dragover','dragenter'].forEach(e=>drop.addEventListener(e,ev=>{ev.preventDefault();drop.classList.add('over')}));
@@ -71,7 +75,7 @@ drop.addEventListener('drop',ev=>{setFile(ev.dataTransfer.files[0])});
 fi.onchange=e=>setFile(e.target.files[0]);
 function setFile(f){if(!f)return;file=f;drop.innerHTML='';const im=document.createElement('img');im.src=URL.createObjectURL(f);drop.appendChild(im)}
 function step(n){[1,2,3].forEach(i=>document.getElementById('s'+i).classList.toggle('on',i<=n))}
-async function health(){try{const r=await fetch('http://localhost:3000/health');document.getElementById('conn').textContent=r.ok?'backend connected':'backend down — run run-demo.bat';}catch{document.getElementById('conn').textContent='backend down — run run-demo.bat'}}
+async function health(){try{const r=await fetch(BACKEND.replace(/\/$/,'')+'/health');document.getElementById('conn').textContent=r.ok?'backend connected':'backend down — run run-demo.bat';}catch{document.getElementById('conn').textContent='backend down — run run-demo.bat'}}
 health();setInterval(health,5000);
 function hist(id){const h=JSON.parse(localStorage.getItem('demoSaved')||'[]');if(id){h.unshift({at:new Date().toLocaleString(),id});localStorage.setItem('demoSaved',JSON.stringify(h.slice(0,12)))}document.getElementById('hist').innerHTML=h.map(x=>`<span class="pill">${x.id.slice(0,14)}… · ${x.at}</span>`).join('')||'<span style="font-size:12px;color:#999">nothing saved yet</span>'}
 hist();
@@ -81,11 +85,11 @@ const go=document.getElementById('go'),st=document.getElementById('st');
 go.disabled=true;go.innerHTML='<span class="spin"></span> Scanning…';step(1);
 try{
 const fd=new FormData();fd.append('image',file);
-const r=await fetch(API+'/receipts/upload',{method:'POST',headers:{'x-user-id':'user_demo','X-OCR-Provider':'tesseract'},body:fd});
+const r=await fetch(API()+'/receipts/upload',{method:'POST',headers:{'x-user-id':'user_demo','X-OCR-Provider':'tesseract'},body:fd});
 if(!r.ok)throw new Error('upload failed '+(await r.text()).slice(0,120));
 const j=await r.json();const id=j.receiptId||j.id;step(2);
 st.innerHTML='<span class="ok">Uploaded.</span> Reading result…';
-const d=await(await fetch(API+'/receipts/'+id,{headers:{'x-user-id':'user_demo'}})).json();
+const d=await(await fetch(API()+'/receipts/'+id,{headers:{'x-user-id':'user_demo'}})).json();
 document.getElementById('resCard').style.display='block';
 document.getElementById('rM').textContent=d.merchant||'Unknown';
 document.getElementById('rT').textContent=(d.total??'–')+' '+(d.currency||'EGP');
