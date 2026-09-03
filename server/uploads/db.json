@@ -1,0 +1,32 @@
+[
+  {
+    "id": "rcpt_965d6e64",
+    "userId": "user_demo",
+    "originalName": "rcpt_e4073e48.png",
+    "savedPath": "F:\\receipt-scanner-demo\\server\\uploads\\rcpt_965d6e64.png",
+    "size": 30635,
+    "mime": "image/png",
+    "ocrProvider": "tesseract",
+    "uploadedAt": "2026-09-03T19:29:57.892Z"
+  },
+  {
+    "id": "rcpt_e1bd7e0d",
+    "userId": "user_demo",
+    "originalName": "rcpt_e4073e48.png",
+    "savedPath": "F:\\receipt-scanner-demo\\server\\uploads\\rcpt_e1bd7e0d.png",
+    "size": 30635,
+    "mime": "image/png",
+    "ocrProvider": "tesseract",
+    "uploadedAt": "2026-09-03T19:32:17.538Z"
+  },
+  {
+    "id": "rcpt_f21ec688",
+    "userId": "user_demo",
+    "originalName": "rcpt_e4073e48.png",
+    "savedPath": "F:\\receipt-scanner-demo\\server\\uploads\\rcpt_f21ec688.png",
+    "size": 30635,
+    "mime": "image/png",
+    "ocrProvider": "tesseract",
+    "uploadedAt": "2026-09-03T19:34:01.388Z"
+  }
+]

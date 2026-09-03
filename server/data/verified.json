@@ -1,0 +1,1352 @@
+[
+  {
+    "id": "seed_Carrefour",
+    "ocrText": "Pepsi 70\nChips 35\nChocolate 90",
+    "ocrElements": [
+      {
+        "text": "Pepsi",
+        "confidence": 0.9
+      },
+      {
+        "text": "Chips",
+        "confidence": 0.9
+      },
+      {
+        "text": "Chocolate",
+        "confidence": 0.9
+      }
+    ],
+    "corrected": {
+      "merchant": "Carrefour",
+      "items": [
+        {
+          "name": "Pepsi",
+          "quantity": 2,
+          "totalPrice": 70
+        },
+        {
+          "name": "Chips",
+          "quantity": 1,
+          "totalPrice": 35
+        },
+        {
+          "name": "Chocolate",
+          "quantity": 2,
+          "totalPrice": 90
+        }
+      ],
+      "total": 195
+    },
+    "createdAt": "2026-09-03T06:56:04.799Z"
+  },
+  {
+    "id": "seed_Metro",
+    "ocrText": "Milk 60\nBread 20",
+    "ocrElements": [
+      {
+        "text": "Milk",
+        "confidence": 0.9
+      },
+      {
+        "text": "Bread",
+        "confidence": 0.9
+      }
+    ],
+    "corrected": {
+      "merchant": "Metro",
+      "items": [
+        {
+          "name": "Milk",
+          "quantity": 2,
+          "totalPrice": 60
+        },
+        {
+          "name": "Bread",
+          "quantity": 1,
+          "totalPrice": 20
+        }
+      ],
+      "total": 80
+    },
+    "createdAt": "2026-09-03T06:56:04.801Z"
+  },
+  {
+    "id": "seed_Spinneys",
+    "ocrText": "Rice 80\nOil 55",
+    "ocrElements": [
+      {
+        "text": "Rice",
+        "confidence": 0.9
+      },
+      {
+        "text": "Oil",
+        "confidence": 0.9
+      }
+    ],
+    "corrected": {
+      "merchant": "Spinneys",
+      "items": [
+        {
+          "name": "Rice",
+          "quantity": 1,
+          "totalPrice": 80
+        },
+        {
+          "name": "Oil",
+          "quantity": 1,
+          "totalPrice": 55
+        }
+      ],
+      "total": 135
+    },
+    "createdAt": "2026-09-03T06:56:04.804Z"
+  },
+  {
+    "id": "seed_Lulu",
+    "ocrText": "Water 20\nYogurt 48",
+    "ocrElements": [
+      {
+        "text": "Water",
+        "confidence": 0.9
+      },
+      {
+        "text": "Yogurt",
+        "confidence": 0.9
+      }
+    ],
+    "corrected": {
+      "merchant": "Lulu",
+      "items": [
+        {
+          "name": "Water",
+          "quantity": 2,
+          "totalPrice": 20
+        },
+        {
+          "name": "Yogurt",
+          "quantity": 4,
+          "totalPrice": 48
+        }
+      ],
+      "total": 68
+    },
+    "createdAt": "2026-09-03T06:56:04.805Z"
+  },
+  {
+    "id": "syn_1788418564808_0",
+    "ocrText": "Metro\nOil 16.00\nYogurt 42.00\nCoffee 22.00\nTOTAL 80.00",
+    "ocrElements": [],
+    "corrected": {
+      "merchant": "Metro",
+      "items": [
+        {
+          "name": "Oil",
+          "quantity": 2,
+          "totalPrice": 16
+        },
+        {
+          "name": "Yogurt",
+          "quantity": 2,
+          "totalPrice": 42
+        },
+        {
+          "name": "Coffee",
+          "quantity": 1,
+          "totalPrice": 22
+        }
+      ],
+      "total": 80
+    },
+    "createdAt": "2026-09-03T06:56:04.808Z"
+  },
+  {
+    "id": "syn_1788418564809_1",
+    "ocrText": "Spinneys\nOil 63.00\nRice 42.00\nCheese 19.00\nCheese 70.00\nTOTAL 194.00",
+    "ocrElements": [],
+    "corrected": {
+      "merchant": "Spinneys",
+      "items": [
+        {
+          "name": "Oil",
+          "quantity": 1,
+          "totalPrice": 63
+        },
+        {
+          "name": "Rice",
+          "quantity": 1,
+          "totalPrice": 42
+        },
+        {
+          "name": "Cheese",
+          "quantity": 1,
+          "totalPrice": 19
+        },
+        {
+          "name": "Cheese",
+          "quantity": 2,
+          "totalPrice": 70
+        }
+      ],
+      "total": 194
+    },
+    "createdAt": "2026-09-03T06:56:04.809Z"
+  },
+  {
+    "id": "syn_1788418564811_2",
+    "ocrText": "Lulu\nRice 51.00\nCoffee 47.00\nTOTAL 98.00",
+    "ocrElements": [],
+    "corrected": {
+      "merchant": "Lulu",
+      "items": [
+        {
+          "name": "Rice",
+          "quantity": 2,
+          "totalPrice": 51
+        },
+        {
+          "name": "Coffee",
+          "quantity": 1,
+          "totalPrice": 47
+        }
+      ],
+      "total": 98
+    },
+    "createdAt": "2026-09-03T06:56:04.811Z"
+  },
+  {
+    "id": "syn_1788418564812_3",
+    "ocrText": "Spinneys\nChips 62.00\nCoffee 34.00\nBread 57.00\nOil 19.00\nTOTAL 172.00",
+    "ocrElements": [],
+    "corrected": {
+      "merchant": "Spinneys",
+      "items": [
+        {
+          "name": "Chips",
+          "quantity": 2,
+          "totalPrice": 62
+        },
+        {
+          "name": "Coffee",
+          "quantity": 2,
+          "totalPrice": 34
+        },
+        {
+          "name": "Bread",
+          "quantity": 2,
+          "totalPrice": 57
+        },
+        {
+          "name": "Oil",
+          "quantity": 1,
+          "totalPrice": 19
+        }
+      ],
+      "total": 172
+    },
+    "createdAt": "2026-09-03T06:56:04.813Z"
+  },
+  {
+    "id": "syn_1788418564814_4",
+    "ocrText": "Carrefour\nCoffee 59.00\nCheese 53.00\nWater 17.00\nTOTAL 129.00",
+    "ocrElements": [],
+    "corrected": {
+      "merchant": "Carrefour",
+      "items": [
+        {
+          "name": "Coffee",
+          "quantity": 1,
+          "totalPrice": 59
+        },
+        {
+          "name": "Cheese",
+          "quantity": 1,
+          "totalPrice": 53
+        },
+        {
+          "name": "Water",
+          "quantity": 1,
+          "totalPrice": 17
+        }
+      ],
+      "total": 129
+    },
+    "createdAt": "2026-09-03T06:56:04.814Z"
+  },
+  {
+    "id": "syn_1788418564816_5",
+    "ocrText": "Metro\nCoffee 38.00\nCoffee 60.00\nMilk 23.00\nChocolate 18.00\nTOTAL 139.00",
+    "ocrElements": [],
+    "corrected": {
+      "merchant": "Metro",
+      "items": [
+        {
+          "name": "Coffee",
+          "quantity": 1,
+          "totalPrice": 38
+        },
+        {
+          "name": "Coffee",
+          "quantity": 2,
+          "totalPrice": 60
+        },
+        {
+          "name": "Milk",
+          "quantity": 1,
+          "totalPrice": 23
+        },
+        {
+          "name": "Chocolate",
+          "quantity": 2,
+          "totalPrice": 18
+        }
+      ],
+      "total": 139
+    },
+    "createdAt": "2026-09-03T06:56:04.816Z"
+  },
+  {
+    "id": "syn_1788418564818_6",
+    "ocrText": "Metro\nChips 62.00\nMilk 13.00\nRice 44.00\nMilk 12.00\nTOTAL 131.00",
+    "ocrElements": [],
+    "corrected": {
+      "merchant": "Metro",
+      "items": [
+        {
+          "name": "Chips",
+          "quantity": 2,
+          "totalPrice": 62
+        },
+        {
+          "name": "Milk",
+          "quantity": 2,
+          "totalPrice": 13
+        },
+        {
+          "name": "Rice",
+          "quantity": 1,
+          "totalPrice": 44
+        },
+        {
+          "name": "Milk",
+          "quantity": 2,
+          "totalPrice": 12
+        }
+      ],
+      "total": 131
+    },
+    "createdAt": "2026-09-03T06:56:04.818Z"
+  },
+  {
+    "id": "syn_1788418564819_7",
+    "ocrText": "Metro\nBread 32.00\nCoffee 26.00\nChips 43.00\nTOTAL 101.00",
+    "ocrElements": [],
+    "corrected": {
+      "merchant": "Metro",
+      "items": [
+        {
+          "name": "Bread",
+          "quantity": 2,
+          "totalPrice": 32
+        },
+        {
+          "name": "Coffee",
+          "quantity": 2,
+          "totalPrice": 26
+        },
+        {
+          "name": "Chips",
+          "quantity": 1,
+          "totalPrice": 43
+        }
+      ],
+      "total": 101
+    },
+    "createdAt": "2026-09-03T06:56:04.819Z"
+  },
+  {
+    "id": "syn_1788418564820_8",
+    "ocrText": "Spinneys\nChocolate 12.00\nChocolate 41.00\nOil 14.00\nTOTAL 67.00",
+    "ocrElements": [],
+    "corrected": {
+      "merchant": "Spinneys",
+      "items": [
+        {
+          "name": "Chocolate",
+          "quantity": 2,
+          "totalPrice": 12
+        },
+        {
+          "name": "Chocolate",
+          "quantity": 2,
+          "totalPrice": 41
+        },
+        {
+          "name": "Oil",
+          "quantity": 2,
+          "totalPrice": 14
+        }
+      ],
+      "total": 67
+    },
+    "createdAt": "2026-09-03T06:56:04.820Z"
+  },
+  {
+    "id": "syn_1788418564821_9",
+    "ocrText": "Metro\nMilk 44.00\nChocolate 46.00\nWater 43.00\nPepsi 330ml 54.00\nTOTAL 187.00",
+    "ocrElements": [],
+    "corrected": {
+      "merchant": "Metro",
+      "items": [
+        {
+          "name": "Milk",
+          "quantity": 1,
+          "totalPrice": 44
+        },
+        {
+          "name": "Chocolate",
+          "quantity": 1,
+          "totalPrice": 46
+        },
+        {
+          "name": "Water",
+          "quantity": 1,
+          "totalPrice": 43
+        },
+        {
+          "name": "Pepsi 330ml",
+          "quantity": 2,
+          "totalPrice": 54
+        }
+      ],
+      "total": 187
+    },
+    "createdAt": "2026-09-03T06:56:04.821Z"
+  },
+  {
+    "id": "syn_1788418564823_10",
+    "ocrText": "Panda\nWater 42.00\nOil 28.00\nBread 49.00\nTOTAL 119.00",
+    "ocrElements": [],
+    "corrected": {
+      "merchant": "Panda",
+      "items": [
+        {
+          "name": "Water",
+          "quantity": 1,
+          "totalPrice": 42
+        },
+        {
+          "name": "Oil",
+          "quantity": 1,
+          "totalPrice": 28
+        },
+        {
+          "name": "Bread",
+          "quantity": 2,
+          "totalPrice": 49
+        }
+      ],
+      "total": 119
+    },
+    "createdAt": "2026-09-03T06:56:04.823Z"
+  },
+  {
+    "id": "syn_1788418564825_11",
+    "ocrText": "Lulu\nChips 53.00\nChips 55.00\nBread 45.00\nCheese 58.00\nTOTAL 211.00",
+    "ocrElements": [],
+    "corrected": {
+      "merchant": "Lulu",
+      "items": [
+        {
+          "name": "Chips",
+          "quantity": 1,
+          "totalPrice": 53
+        },
+        {
+          "name": "Chips",
+          "quantity": 1,
+          "totalPrice": 55
+        },
+        {
+          "name": "Bread",
+          "quantity": 2,
+          "totalPrice": 45
+        },
+        {
+          "name": "Cheese",
+          "quantity": 2,
+          "totalPrice": 58
+        }
+      ],
+      "total": 211
+    },
+    "createdAt": "2026-09-03T06:56:04.825Z"
+  },
+  {
+    "id": "syn_1788418564826_12",
+    "ocrText": "Lulu\nCheese 45.00\nOil 22.00\nChocolate 24.00\nRice 18.00\nTOTAL 109.00",
+    "ocrElements": [],
+    "corrected": {
+      "merchant": "Lulu",
+      "items": [
+        {
+          "name": "Cheese",
+          "quantity": 2,
+          "totalPrice": 45
+        },
+        {
+          "name": "Oil",
+          "quantity": 1,
+          "totalPrice": 22
+        },
+        {
+          "name": "Chocolate",
+          "quantity": 1,
+          "totalPrice": 24
+        },
+        {
+          "name": "Rice",
+          "quantity": 2,
+          "totalPrice": 18
+        }
+      ],
+      "total": 109
+    },
+    "createdAt": "2026-09-03T06:56:04.826Z"
+  },
+  {
+    "id": "syn_1788418564827_13",
+    "ocrText": "Lulu\nYogurt 28.00\nCheese 65.00\nTOTAL 93.00",
+    "ocrElements": [],
+    "corrected": {
+      "merchant": "Lulu",
+      "items": [
+        {
+          "name": "Yogurt",
+          "quantity": 2,
+          "totalPrice": 28
+        },
+        {
+          "name": "Cheese",
+          "quantity": 1,
+          "totalPrice": 65
+        }
+      ],
+      "total": 93
+    },
+    "createdAt": "2026-09-03T06:56:04.827Z"
+  },
+  {
+    "id": "syn_1788418564829_14",
+    "ocrText": "Carrefour\nRice 36.00\nWater 64.00\nChips 51.00\nTOTAL 151.00",
+    "ocrElements": [],
+    "corrected": {
+      "merchant": "Carrefour",
+      "items": [
+        {
+          "name": "Rice",
+          "quantity": 1,
+          "totalPrice": 36
+        },
+        {
+          "name": "Water",
+          "quantity": 2,
+          "totalPrice": 64
+        },
+        {
+          "name": "Chips",
+          "quantity": 1,
+          "totalPrice": 51
+        }
+      ],
+      "total": 151
+    },
+    "createdAt": "2026-09-03T06:56:04.829Z"
+  },
+  {
+    "id": "syn_1788418564830_15",
+    "ocrText": "Spinneys\nYogurt 37.00\nChips 59.00\nWater 60.00\nCheese 40.00\nTOTAL 196.00",
+    "ocrElements": [],
+    "corrected": {
+      "merchant": "Spinneys",
+      "items": [
+        {
+          "name": "Yogurt",
+          "quantity": 1,
+          "totalPrice": 37
+        },
+        {
+          "name": "Chips",
+          "quantity": 2,
+          "totalPrice": 59
+        },
+        {
+          "name": "Water",
+          "quantity": 1,
+          "totalPrice": 60
+        },
+        {
+          "name": "Cheese",
+          "quantity": 1,
+          "totalPrice": 40
+        }
+      ],
+      "total": 196
+    },
+    "createdAt": "2026-09-03T06:56:04.830Z"
+  },
+  {
+    "id": "syn_1788418564832_16",
+    "ocrText": "Lulu\nWater 29.00\nChocolate 17.00\nOil 42.00\nTOTAL 88.00",
+    "ocrElements": [],
+    "corrected": {
+      "merchant": "Lulu",
+      "items": [
+        {
+          "name": "Water",
+          "quantity": 2,
+          "totalPrice": 29
+        },
+        {
+          "name": "Chocolate",
+          "quantity": 1,
+          "totalPrice": 17
+        },
+        {
+          "name": "Oil",
+          "quantity": 1,
+          "totalPrice": 42
+        }
+      ],
+      "total": 88
+    },
+    "createdAt": "2026-09-03T06:56:04.832Z"
+  },
+  {
+    "id": "syn_1788418564833_17",
+    "ocrText": "Panda\nYogurt 49.00\nChips 15.00\nCheese 22.00\nTOTAL 86.00",
+    "ocrElements": [],
+    "corrected": {
+      "merchant": "Panda",
+      "items": [
+        {
+          "name": "Yogurt",
+          "quantity": 2,
+          "totalPrice": 49
+        },
+        {
+          "name": "Chips",
+          "quantity": 1,
+          "totalPrice": 15
+        },
+        {
+          "name": "Cheese",
+          "quantity": 1,
+          "totalPrice": 22
+        }
+      ],
+      "total": 86
+    },
+    "createdAt": "2026-09-03T06:56:04.833Z"
+  },
+  {
+    "id": "syn_1788418564835_18",
+    "ocrText": "Panda\nBread 61.00\nMilk 61.00\nWater 70.00\nWater 19.00\nTOTAL 211.00",
+    "ocrElements": [],
+    "corrected": {
+      "merchant": "Panda",
+      "items": [
+        {
+          "name": "Bread",
+          "quantity": 2,
+          "totalPrice": 61
+        },
+        {
+          "name": "Milk",
+          "quantity": 1,
+          "totalPrice": 61
+        },
+        {
+          "name": "Water",
+          "quantity": 1,
+          "totalPrice": 70
+        },
+        {
+          "name": "Water",
+          "quantity": 1,
+          "totalPrice": 19
+        }
+      ],
+      "total": 211
+    },
+    "createdAt": "2026-09-03T06:56:04.835Z"
+  },
+  {
+    "id": "syn_1788418564836_19",
+    "ocrText": "Carrefour\nChips 51.00\nMilk 63.00\nCheese 12.00\nOil 20.00\nTOTAL 146.00",
+    "ocrElements": [],
+    "corrected": {
+      "merchant": "Carrefour",
+      "items": [
+        {
+          "name": "Chips",
+          "quantity": 2,
+          "totalPrice": 51
+        },
+        {
+          "name": "Milk",
+          "quantity": 2,
+          "totalPrice": 63
+        },
+        {
+          "name": "Cheese",
+          "quantity": 1,
+          "totalPrice": 12
+        },
+        {
+          "name": "Oil",
+          "quantity": 1,
+          "totalPrice": 20
+        }
+      ],
+      "total": 146
+    },
+    "createdAt": "2026-09-03T06:56:04.837Z"
+  },
+  {
+    "id": "syn_1788418564838_20",
+    "ocrText": "Metro\nCheese 20.00\nMilk 37.00\nBread 45.00\nTOTAL 102.00",
+    "ocrElements": [],
+    "corrected": {
+      "merchant": "Metro",
+      "items": [
+        {
+          "name": "Cheese",
+          "quantity": 1,
+          "totalPrice": 20
+        },
+        {
+          "name": "Milk",
+          "quantity": 1,
+          "totalPrice": 37
+        },
+        {
+          "name": "Bread",
+          "quantity": 1,
+          "totalPrice": 45
+        }
+      ],
+      "total": 102
+    },
+    "createdAt": "2026-09-03T06:56:04.838Z"
+  },
+  {
+    "id": "syn_1788418564840_21",
+    "ocrText": "Carrefour\nOil 49.00\nOil 45.00\nTOTAL 94.00",
+    "ocrElements": [],
+    "corrected": {
+      "merchant": "Carrefour",
+      "items": [
+        {
+          "name": "Oil",
+          "quantity": 1,
+          "totalPrice": 49
+        },
+        {
+          "name": "Oil",
+          "quantity": 1,
+          "totalPrice": 45
+        }
+      ],
+      "total": 94
+    },
+    "createdAt": "2026-09-03T06:56:04.840Z"
+  },
+  {
+    "id": "syn_1788418564842_22",
+    "ocrText": "Carrefour\nPepsi 330ml 16.00\nChocolate 40.00\nRice 31.00\nMilk 61.00\nTOTAL 148.00",
+    "ocrElements": [],
+    "corrected": {
+      "merchant": "Carrefour",
+      "items": [
+        {
+          "name": "Pepsi 330ml",
+          "quantity": 1,
+          "totalPrice": 16
+        },
+        {
+          "name": "Chocolate",
+          "quantity": 2,
+          "totalPrice": 40
+        },
+        {
+          "name": "Rice",
+          "quantity": 2,
+          "totalPrice": 31
+        },
+        {
+          "name": "Milk",
+          "quantity": 1,
+          "totalPrice": 61
+        }
+      ],
+      "total": 148
+    },
+    "createdAt": "2026-09-03T06:56:04.842Z"
+  },
+  {
+    "id": "syn_1788418564844_23",
+    "ocrText": "Metro\nCheese 32.00\nPepsi 330ml 43.00\nTOTAL 75.00",
+    "ocrElements": [],
+    "corrected": {
+      "merchant": "Metro",
+      "items": [
+        {
+          "name": "Cheese",
+          "quantity": 2,
+          "totalPrice": 32
+        },
+        {
+          "name": "Pepsi 330ml",
+          "quantity": 1,
+          "totalPrice": 43
+        }
+      ],
+      "total": 75
+    },
+    "createdAt": "2026-09-03T06:56:04.844Z"
+  },
+  {
+    "id": "syn_1788418564846_24",
+    "ocrText": "Spinneys\nWater 46.00\nBread 54.00\nBread 45.00\nCheese 53.00\nTOTAL 198.00",
+    "ocrElements": [],
+    "corrected": {
+      "merchant": "Spinneys",
+      "items": [
+        {
+          "name": "Water",
+          "quantity": 1,
+          "totalPrice": 46
+        },
+        {
+          "name": "Bread",
+          "quantity": 1,
+          "totalPrice": 54
+        },
+        {
+          "name": "Bread",
+          "quantity": 2,
+          "totalPrice": 45
+        },
+        {
+          "name": "Cheese",
+          "quantity": 2,
+          "totalPrice": 53
+        }
+      ],
+      "total": 198
+    },
+    "createdAt": "2026-09-03T06:56:04.846Z"
+  },
+  {
+    "id": "syn_1788418564848_25",
+    "ocrText": "Spinneys\nYogurt 62.00\nPepsi 330ml 40.00\nMilk 32.00\nBread 47.00\nTOTAL 181.00",
+    "ocrElements": [],
+    "corrected": {
+      "merchant": "Spinneys",
+      "items": [
+        {
+          "name": "Yogurt",
+          "quantity": 1,
+          "totalPrice": 62
+        },
+        {
+          "name": "Pepsi 330ml",
+          "quantity": 1,
+          "totalPrice": 40
+        },
+        {
+          "name": "Milk",
+          "quantity": 2,
+          "totalPrice": 32
+        },
+        {
+          "name": "Bread",
+          "quantity": 1,
+          "totalPrice": 47
+        }
+      ],
+      "total": 181
+    },
+    "createdAt": "2026-09-03T06:56:04.848Z"
+  },
+  {
+    "id": "syn_1788418564849_26",
+    "ocrText": "Metro\nChips 42.00\nCoffee 46.00\nYogurt 14.00\nTOTAL 102.00",
+    "ocrElements": [],
+    "corrected": {
+      "merchant": "Metro",
+      "items": [
+        {
+          "name": "Chips",
+          "quantity": 1,
+          "totalPrice": 42
+        },
+        {
+          "name": "Coffee",
+          "quantity": 2,
+          "totalPrice": 46
+        },
+        {
+          "name": "Yogurt",
+          "quantity": 1,
+          "totalPrice": 14
+        }
+      ],
+      "total": 102
+    },
+    "createdAt": "2026-09-03T06:56:04.849Z"
+  },
+  {
+    "id": "syn_1788418564851_27",
+    "ocrText": "Metro\nYogurt 41.00\nChocolate 39.00\nTOTAL 80.00",
+    "ocrElements": [],
+    "corrected": {
+      "merchant": "Metro",
+      "items": [
+        {
+          "name": "Yogurt",
+          "quantity": 2,
+          "totalPrice": 41
+        },
+        {
+          "name": "Chocolate",
+          "quantity": 1,
+          "totalPrice": 39
+        }
+      ],
+      "total": 80
+    },
+    "createdAt": "2026-09-03T06:56:04.851Z"
+  },
+  {
+    "id": "syn_1788418564853_28",
+    "ocrText": "Spinneys\nCheese 70.00\nChips 48.00\nChocolate 57.00\nTOTAL 175.00",
+    "ocrElements": [],
+    "corrected": {
+      "merchant": "Spinneys",
+      "items": [
+        {
+          "name": "Cheese",
+          "quantity": 2,
+          "totalPrice": 70
+        },
+        {
+          "name": "Chips",
+          "quantity": 1,
+          "totalPrice": 48
+        },
+        {
+          "name": "Chocolate",
+          "quantity": 1,
+          "totalPrice": 57
+        }
+      ],
+      "total": 175
+    },
+    "createdAt": "2026-09-03T06:56:04.853Z"
+  },
+  {
+    "id": "syn_1788418564854_29",
+    "ocrText": "Carrefour\nPepsi 330ml 67.00\nCheese 44.00\nRice 21.00\nRice 57.00\nTOTAL 189.00",
+    "ocrElements": [],
+    "corrected": {
+      "merchant": "Carrefour",
+      "items": [
+        {
+          "name": "Pepsi 330ml",
+          "quantity": 2,
+          "totalPrice": 67
+        },
+        {
+          "name": "Cheese",
+          "quantity": 2,
+          "totalPrice": 44
+        },
+        {
+          "name": "Rice",
+          "quantity": 2,
+          "totalPrice": 21
+        },
+        {
+          "name": "Rice",
+          "quantity": 2,
+          "totalPrice": 57
+        }
+      ],
+      "total": 189
+    },
+    "createdAt": "2026-09-03T06:56:04.854Z"
+  },
+  {
+    "id": "syn_1788418564856_30",
+    "ocrText": "Carrefour\nCoffee 45.00\nYogurt 49.00\nTOTAL 94.00",
+    "ocrElements": [],
+    "corrected": {
+      "merchant": "Carrefour",
+      "items": [
+        {
+          "name": "Coffee",
+          "quantity": 2,
+          "totalPrice": 45
+        },
+        {
+          "name": "Yogurt",
+          "quantity": 1,
+          "totalPrice": 49
+        }
+      ],
+      "total": 94
+    },
+    "createdAt": "2026-09-03T06:56:04.856Z"
+  },
+  {
+    "id": "syn_1788418564857_31",
+    "ocrText": "Lulu\nOil 55.00\nWater 49.00\nBread 49.00\nYogurt 64.00\nTOTAL 217.00",
+    "ocrElements": [],
+    "corrected": {
+      "merchant": "Lulu",
+      "items": [
+        {
+          "name": "Oil",
+          "quantity": 2,
+          "totalPrice": 55
+        },
+        {
+          "name": "Water",
+          "quantity": 2,
+          "totalPrice": 49
+        },
+        {
+          "name": "Bread",
+          "quantity": 1,
+          "totalPrice": 49
+        },
+        {
+          "name": "Yogurt",
+          "quantity": 1,
+          "totalPrice": 64
+        }
+      ],
+      "total": 217
+    },
+    "createdAt": "2026-09-03T06:56:04.857Z"
+  },
+  {
+    "id": "syn_1788418564859_32",
+    "ocrText": "Spinneys\nCheese 66.00\nCoffee 58.00\nTOTAL 124.00",
+    "ocrElements": [],
+    "corrected": {
+      "merchant": "Spinneys",
+      "items": [
+        {
+          "name": "Cheese",
+          "quantity": 1,
+          "totalPrice": 66
+        },
+        {
+          "name": "Coffee",
+          "quantity": 2,
+          "totalPrice": 58
+        }
+      ],
+      "total": 124
+    },
+    "createdAt": "2026-09-03T06:56:04.859Z"
+  },
+  {
+    "id": "syn_1788418564860_33",
+    "ocrText": "Panda\nWater 32.00\nMilk 59.00\nOil 70.00\nTOTAL 161.00",
+    "ocrElements": [],
+    "corrected": {
+      "merchant": "Panda",
+      "items": [
+        {
+          "name": "Water",
+          "quantity": 1,
+          "totalPrice": 32
+        },
+        {
+          "name": "Milk",
+          "quantity": 1,
+          "totalPrice": 59
+        },
+        {
+          "name": "Oil",
+          "quantity": 2,
+          "totalPrice": 70
+        }
+      ],
+      "total": 161
+    },
+    "createdAt": "2026-09-03T06:56:04.860Z"
+  },
+  {
+    "id": "syn_1788418564861_34",
+    "ocrText": "Metro\nWater 45.00\nBread 18.00\nCoffee 65.00\nTOTAL 128.00",
+    "ocrElements": [],
+    "corrected": {
+      "merchant": "Metro",
+      "items": [
+        {
+          "name": "Water",
+          "quantity": 2,
+          "totalPrice": 45
+        },
+        {
+          "name": "Bread",
+          "quantity": 2,
+          "totalPrice": 18
+        },
+        {
+          "name": "Coffee",
+          "quantity": 2,
+          "totalPrice": 65
+        }
+      ],
+      "total": 128
+    },
+    "createdAt": "2026-09-03T06:56:04.861Z"
+  },
+  {
+    "id": "syn_1788418564863_35",
+    "ocrText": "Metro\nMilk 31.00\nMilk 36.00\nBread 21.00\nPepsi 330ml 64.00\nTOTAL 152.00",
+    "ocrElements": [],
+    "corrected": {
+      "merchant": "Metro",
+      "items": [
+        {
+          "name": "Milk",
+          "quantity": 2,
+          "totalPrice": 31
+        },
+        {
+          "name": "Milk",
+          "quantity": 2,
+          "totalPrice": 36
+        },
+        {
+          "name": "Bread",
+          "quantity": 2,
+          "totalPrice": 21
+        },
+        {
+          "name": "Pepsi 330ml",
+          "quantity": 2,
+          "totalPrice": 64
+        }
+      ],
+      "total": 152
+    },
+    "createdAt": "2026-09-03T06:56:04.863Z"
+  },
+  {
+    "id": "syn_1788418564865_36",
+    "ocrText": "Carrefour\nPepsi 330ml 26.00\nOil 13.00\nBread 66.00\nTOTAL 105.00",
+    "ocrElements": [],
+    "corrected": {
+      "merchant": "Carrefour",
+      "items": [
+        {
+          "name": "Pepsi 330ml",
+          "quantity": 1,
+          "totalPrice": 26
+        },
+        {
+          "name": "Oil",
+          "quantity": 2,
+          "totalPrice": 13
+        },
+        {
+          "name": "Bread",
+          "quantity": 2,
+          "totalPrice": 66
+        }
+      ],
+      "total": 105
+    },
+    "createdAt": "2026-09-03T06:56:04.865Z"
+  },
+  {
+    "id": "syn_1788418564866_37",
+    "ocrText": "Lulu\nMilk 41.00\nRice 47.00\nTOTAL 88.00",
+    "ocrElements": [],
+    "corrected": {
+      "merchant": "Lulu",
+      "items": [
+        {
+          "name": "Milk",
+          "quantity": 2,
+          "totalPrice": 41
+        },
+        {
+          "name": "Rice",
+          "quantity": 1,
+          "totalPrice": 47
+        }
+      ],
+      "total": 88
+    },
+    "createdAt": "2026-09-03T06:56:04.866Z"
+  },
+  {
+    "id": "syn_1788418564868_38",
+    "ocrText": "Carrefour\nCheese 39.00\nOil 55.00\nYogurt 64.00\nChocolate 24.00\nTOTAL 182.00",
+    "ocrElements": [],
+    "corrected": {
+      "merchant": "Carrefour",
+      "items": [
+        {
+          "name": "Cheese",
+          "quantity": 2,
+          "totalPrice": 39
+        },
+        {
+          "name": "Oil",
+          "quantity": 1,
+          "totalPrice": 55
+        },
+        {
+          "name": "Yogurt",
+          "quantity": 2,
+          "totalPrice": 64
+        },
+        {
+          "name": "Chocolate",
+          "quantity": 2,
+          "totalPrice": 24
+        }
+      ],
+      "total": 182
+    },
+    "createdAt": "2026-09-03T06:56:04.868Z"
+  },
+  {
+    "id": "syn_1788418564870_39",
+    "ocrText": "Spinneys\nMilk 30.00\nPepsi 330ml 27.00\nTOTAL 57.00",
+    "ocrElements": [],
+    "corrected": {
+      "merchant": "Spinneys",
+      "items": [
+        {
+          "name": "Milk",
+          "quantity": 1,
+          "totalPrice": 30
+        },
+        {
+          "name": "Pepsi 330ml",
+          "quantity": 2,
+          "totalPrice": 27
+        }
+      ],
+      "total": 57
+    },
+    "createdAt": "2026-09-03T06:56:04.870Z"
+  },
+  {
+    "id": "rcpt_81f66211",
+    "ocrText": "1\n2057\nLu soa                   a\nLom            an\nSa                    an\nuote                         in\nCRONE 56\nDRONE: 5\nwake                   sw\nsur,                   25\nid                        in\n8\niar\nLAST, 105\nErte\nSL\n",
+    "ocrElements": [
+      {
+        "text": "1",
+        "confidence": 0.85
+      },
+      {
+        "text": "2057",
+        "confidence": 0.85
+      },
+      {
+        "text": "Lu soa                   a",
+        "confidence": 0.85
+      },
+      {
+        "text": "Lom            an",
+        "confidence": 0.85
+      },
+      {
+        "text": "Sa                    an",
+        "confidence": 0.85
+      },
+      {
+        "text": "uote                         in",
+        "confidence": 0.85
+      },
+      {
+        "text": "CRONE 56",
+        "confidence": 0.85
+      },
+      {
+        "text": "DRONE: 5",
+        "confidence": 0.85
+      },
+      {
+        "text": "wake                   sw",
+        "confidence": 0.85
+      },
+      {
+        "text": "sur,                   25",
+        "confidence": 0.85
+      },
+      {
+        "text": "id                        in",
+        "confidence": 0.85
+      },
+      {
+        "text": "8",
+        "confidence": 0.85
+      },
+      {
+        "text": "iar",
+        "confidence": 0.85
+      },
+      {
+        "text": "LAST, 105",
+        "confidence": 0.85
+      },
+      {
+        "text": "Erte",
+        "confidence": 0.85
+      },
+      {
+        "text": "SL",
+        "confidence": 0.85
+      }
+    ],
+    "corrected": {
+      "merchant": "",
+      "items": [
+        {
+          "name": "CRONE",
+          "quantity": 1,
+          "totalPrice": 56
+        },
+        {
+          "name": "DRONE:",
+          "quantity": 1,
+          "totalPrice": 5
+        },
+        {
+          "name": "sur,",
+          "quantity": 1,
+          "totalPrice": 25
+        },
+        {
+          "name": "LAST,",
+          "quantity": 1,
+          "totalPrice": 1.05
+        }
+      ],
+      "total": null
+    },
+    "createdAt": "2026-09-03T14:22:34.592Z"
+  }
+]
