@@ -4,3 +4,6 @@ server/uploads/*.jpg
 server/uploads/*.jpeg
 server/uploads/*.webp
 *.log
+
+server/uploads/db.json
+server/*.traineddata
