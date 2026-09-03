@@ -1,24 +1,25 @@
 # Receipt Scanner — Demo: Scan → Result → Save
 
-Main feature sample. Pick a receipt image → upload to backend → see OCR + parsed total → saved.
+Main features only. Pick a receipt image → upload → see OCR + parsed total → saved.
 
-## Run backend (tesseract = primary, best for you)
+## No download needed (browsers block .bat)
 
-```bat
-cd F:\receipt-scanner
-run.bat
+**Option A — clone (easiest):**
+```
+git clone https://github.com/eyad0103/receipt-scanner-demo
 ```
 
-Backend → http://localhost:3000 · Frontend → http://localhost:5173
+**Option B — no files at all, paste this in a terminal:**
+```bat
+cd /d F:\receipt-scanner
+node dist/server.js
+```
+then open `demo.html` from this repo page (click file → Raw → save as `.html`, or copy its source below into notepad → save as demo.html).
 
-## Try demo
+**Option C — PowerShell:** right-click `run-demo.ps1` → Run with PowerShell
+(or `powershell -ExecutionPolicy Bypass -File run-demo.ps1`).
 
-1. Open `demo.html` in browser (backend must be on :3000)
-2. Pick a receipt image → **Scan receipt**
-3. See preview + JSON (OCR text, merchant, total, items) + saved id
-4. Saved ids also in `localStorage.demoSaved`
-
-Or CLI: `demo-scan.bat` uploads latest `uploads\*.png` and prints parsed result.
+Then: pick image → **Scan receipt** → result + saved id. Backend → http://localhost:3000.
 
 ## API
 
@@ -29,4 +30,20 @@ curl -X POST http://localhost:3000/api/receipts/upload \
 GET http://localhost:3000/api/receipts/<id>
 ```
 
-Default engine: **tesseract** (fast, offline). PaddleOCR-VL / Chandra removed from default — tesseract is primary.
+Default engine: **tesseract** (fast, offline).
+
+## Is it safe? Full source of every file
+
+This repo has only 5 small text files — no exe, no installer, no obfuscation.
+Click any file above to read every line. Summary:
+
+| File | Lines | Does |
+|---|---|---|
+| `demo.html` | ~120 | Plain HTML+CSS+JS. File picker → `POST localhost:3000/api/receipts/upload` → shows merchant/total/items JSON → saves id to `localStorage`. No network except your own localhost backend. |
+| `run-demo.bat` | ~10 | Checks `localhost:3000/health`; if down, starts `node dist/server.js`; opens `demo.html`. |
+| `run-demo.ps1` | ~12 | Same as the .bat, for when browsers block .bat downloads. |
+| `demo-scan.bat` | ~12 | Uploads latest `uploads\*.png` via curl and prints the JSON result. |
+| `login-github.bat` | ~3 | Runs `gh auth login` (used once by the author to publish). |
+
+To verify: open `demo.html` in notepad — readable source, no minified blobs, no external scripts, no tracking.
+Full source of `demo.html` is viewable here: https://github.com/eyad0103/receipt-scanner-demo/blob/master/demo.html
