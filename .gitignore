@@ -1,0 +1,6 @@
+server/node_modules/
+server/uploads/*.png
+server/uploads/*.jpg
+server/uploads/*.jpeg
+server/uploads/*.webp
+*.log
