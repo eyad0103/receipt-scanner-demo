@@ -83,6 +83,18 @@ function parseItemLine(el) {
         const unit = qty > 0 ? Math.round((total / qty) * 100) / 100 : null;
         return { name, quantity: qty, unitPrice: unit, totalPrice: total, confidence: el.confidence * 0.88, boundingBox: el.boundingBox };
     }
+    const dashMatch = text.match(/^(.*?)\s*[-–—:]\s*(\d+[.,]?\d*)$/);
+    if (dashMatch && /[A-Za-z\u0600-\u06FF]/.test(dashMatch[1])) {
+        const name = cleanName(dashMatch[1]);
+        const { amount: total } = (0, normalize_1.normalizePrice)(dashMatch[2]);
+        if (name.length >= 2 && total !== null) {
+            if (name.split(/\s+/).length <= 8 && total > 0 && total < 100000) {
+                if (!/^(TOTAL|SUBTOTAL|TAX|VAT|DISCOUNT|BILL|SIGNATURE|CASH|CHANGE)/i.test(name)) {
+                    return { name, quantity: 1, unitPrice: total, totalPrice: total, confidence: el.confidence * 0.85, boundingBox: el.boundingBox };
+                }
+            }
+        }
+    }
     const simpleMatch = text.match(/^(.*?)\s+(\d+[.,]?\d*)$/);
     if (simpleMatch) {
         const name = cleanName(simpleMatch[1]);
