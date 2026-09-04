@@ -37,6 +37,7 @@ exports.DATE_PATTERNS = [
     new RegExp(`\\b([${DIG}]{2})[\\/\\-]([${DIG}]{2})[\\/\\-]([${DIG}]{4})\\b`),
     new RegExp(`\\b([${DIG}]{4})[\\/\\-]([${DIG}]{2})[\\/\\-]([${DIG}]{2})\\b`),
     /\b(\d{1,2})\s+(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\s+(\d{4})/i,
+    /\b(\d{2})(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*(\d{4})/i,
     new RegExp(`\\b([${DIG}]{1,2})[\\/\\-]([${DIG}]{1,2})[\\/\\-]([${DIG}]{2,4})\\b`),
 ];
 exports.TIME_PATTERNS = [
@@ -51,7 +52,7 @@ exports.SUBTOTAL_KEYWORDS = /(subtotal|sub total|sub-total|المجموع الف
 exports.TAX_KEYWORDS = /(tax|vat|value added tax|ضريبة|القيمة المضافة|\bTX\b)/i;
 exports.DISCOUNT_KEYWORDS = /(discount|disc\.|reduction|promo|خصم|تخفيض)/i;
 exports.PAYMENT_KEYWORDS = /(cash|visa|LVISA|mastercard|card|payment|mada|نقدا|نقدي|بطاقة|SA:|4535|XXX|SAPP|SIGNATURE)/i;
-exports.SKIP_KEYWORDS = /(address|phone|tel|tax no|vat no|receipt|invoice|thank you|welcome|store|branch|www\.|http|@|العنوان|هاتف|visa|LVISA|mastercard|SA:|4535|XXX|SAPP|SIGNATURE|VISA|MASTERCARD)/i;
+exports.SKIP_KEYWORDS = /(address|phone|tel|tax no|vat no|receipt|invoice|thank|welcome|store|branch|www\.|http|@|العنوان|هاتف|visa|LVISA|mastercard|SA:|4535|XXX|SAPP|SIGNATURE|VISA|MASTERCARD|\bTIP\b|شكرا)/i;
 exports.KNOWN_MERCHANTS = ["carrefour", "metro", "spinneys", "lulu", "hyper", "panda", "bim", "kazyon", "كارفور", "بنده", "العثيم", "هايبر"];
 function isTotalLine(text) {
     const t = arabicToWestern(text);

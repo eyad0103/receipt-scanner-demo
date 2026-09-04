@@ -12,6 +12,7 @@ function stripCurrencyAffix(text) {
     let t = text
         .replace(/^\s*[$€£]\s*/, "")
         .replace(/\s*[$€£]\s*$/, "")
+        .replace(/(\d)[A-Za-z]\s*$/, "$1")
         .replace(/\s+(EGP|L\.?E\.?|USD|SAR|AED|KWD|QAR|BHD|جنيه|ر\.?س\.?)\s*$/i, "");
     const pre = t.replace(/^(EGP|L\.?E\.?|USD|SAR|AED|جنيه)\s+/i, "");
     if (pre !== t && /[A-Za-z\u0600-\u06FF]{2,}.*\d|\d.*[A-Za-z\u0600-\u06FF]{2,}/.test(pre))
@@ -22,6 +23,8 @@ function cleanName(name) {
     return name
         .replace(/\s*[-–—:]\s*$/g, "")
         .replace(/^\s*[-–—:]\s*/g, "")
+        .replace(/^\s*[>•*+]\s*/, "")
+        .replace(/^\d{1,2}[.)]\s+(?=[A-Za-z\u0600-\u06FF])/, "")
         .replace(/\s+/g, " ")
         .trim();
 }
@@ -116,7 +119,7 @@ function parseItemLine(el) {
         const name = cleanName(dashMatch[1]);
         const { amount: total } = (0, normalize_1.normalizePrice)(dashMatch[2]);
         if (name.length >= 2 && shortNameAllowed(name, dict) && total !== null) {
-            if (name.split(/\s+/).length <= 15 && total > 0 && total < 100000) {
+            if (name.split(/\s+/).length <= 15 && total > 0 && total < 10000000) {
                 if (!/^(TOTAL|SUBTOTAL|TAX|VAT|DISCOUNT|BILL|SIGNATURE|CASH|CHANGE)/i.test(name)) {
                     return { name, quantity: 1, unitPrice: total, totalPrice: total, confidence: el.confidence * 0.85, boundingBox: el.boundingBox };
                 }
@@ -131,7 +134,7 @@ function parseItemLine(el) {
             return null;
         if (name.split(/\s+/).length > 8)
             return null;
-        if (total <= 0 || total > 100000)
+        if (total <= 0 || total > 10000000)
             return null;
         if (/^(TOTAL|SUBTOTAL|TAX|VAT|DISCOUNT|BILL|SIGNATURE)/i.test(name))
             return null;
@@ -171,7 +174,7 @@ function parseItems(doc) {
     }
     return items.filter((it) => {
         const price = it.totalPrice;
-        return price > 0 && price < 100000;
+        return price > 0 && price < 10000000;
     });
 }
 function parseItemsFromLines(lines, doc) {
@@ -211,5 +214,5 @@ function parseItemsFromLines(lines, doc) {
                 items.push(p);
         }
     }
-    return items.filter((it) => it.totalPrice > 0 && it.totalPrice < 100000);
+    return items.filter((it) => it.totalPrice > 0 && it.totalPrice < 10000000);
 }

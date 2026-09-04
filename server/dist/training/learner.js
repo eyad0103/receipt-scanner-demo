@@ -24,11 +24,13 @@ function closestMatch(input, dict, maxDist = 2) {
     let bestDist = Infinity;
     let bestFreq = 0;
     for (const [k, freq] of dict) {
-        if (freq < 2)
-            continue;
         if (k.length < 3 || low.length < 3)
             continue;
         const d = levenshtein(low, k);
+        if (d === 0)
+            return k;
+        if (freq < 2 && !(d === 1 && k.length >= 4 && low.length >= 4))
+            continue;
         if (d <= maxDist && (d < bestDist || (d === bestDist && freq > bestFreq))) {
             bestDist = d;
             bestFreq = freq;

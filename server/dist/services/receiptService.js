@@ -15,6 +15,8 @@ const paddleValidator_1 = require("../validation/paddleValidator");
 const receiptRepository_1 = require("../repositories/receiptRepository");
 const qrDetector_1 = require("../utils/qrDetector");
 const timeout_1 = require("../utils/timeout");
+const qualityGate_1 = require("../image-processing/qualityGate");
+const boundaryCrop_1 = require("../image-processing/boundaryCrop");
 const debugStore = new Map();
 function getPipelineDebug(receiptId) {
     return debugStore.get(receiptId);
@@ -49,10 +51,21 @@ class ReceiptService {
             paddleValidation: null,
         };
         try {
+            const quality = await (0, qualityGate_1.assessQuality)(imageBuffer);
+            debugStore.set(receiptId + ":quality", quality);
+            const fatal = quality.issues.filter((i) => i.fatal);
+            if (!quality.passed) {
+                throw new Error("Photo quality too low: " + fatal.map((i) => `${i.message} — ${i.advice}`).join(" "));
+            }
+            debug.qualityScore = quality.score;
+            const qualityWarnings = quality.issues.map((i) => `[Photo] ${i.message} ${i.advice}`);
+            const bounds = await (0, boundaryCrop_1.detectReceiptBounds)(imageBuffer);
+            debug.receiptBounds = bounds.bounds;
+            const framed = bounds.bounds.cropped ? bounds.buffer : imageBuffer;
             const baseForOrientation = forcedProvider ? ocrService_1.OcrService.create(forcedProvider) : ocrService_1.OcrService.create(config_1.config.ocr.provider);
-            const orientation = await (0, orientationDetector_1.detectBestOrientation)(imageBuffer, baseForOrientation);
+            const orientation = await (0, orientationDetector_1.detectBestOrientation)(framed, baseForOrientation);
             debug.orientation = { angle: orientation.angle, candidates: orientation.candidates.map((c) => ({ angle: c.angle, score: c.score, metrics: c.metrics })) };
-            const oriented = await (0, orientationDetector_1.correctOrientation)(imageBuffer, orientation.angle);
+            const oriented = await (0, orientationDetector_1.correctOrientation)(framed, orientation.angle);
             const variants = await (0, variants_1.generateVariants)(oriented);
             const scored = [];
             const lightProvider = (forcedProvider ? ocrService_1.OcrService.create(forcedProvider) : ocrService_1.OcrService.create(config_1.config.ocr.provider));
@@ -105,6 +118,10 @@ class ReceiptService {
             debug.qrCodes = qrCodes;
             const parsed = (0, parser_1.parseReceipt)(finalDoc);
             const validation = (0, validator_1.validateReceipt)(parsed);
+            validation.warnings.push(...qualityWarnings);
+            const recon = (0, validator_1.reconcileArithmetic)(parsed);
+            validation.warnings.push(...recon.warnings.map((w) => `[Math] ${w}`));
+            validation.confidenceAdjustment += recon.confidenceBoost;
             let paddleValidation = null;
             try {
                 paddleValidation = await (0, paddleValidator_1.validateWithPaddle)(finalDoc, parsed, bufferToOcr);
