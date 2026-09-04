@@ -35,6 +35,8 @@ var __importStar = (this && this.__importStar) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.detectBestOrientation = detectBestOrientation;
 exports.correctOrientation = correctOrientation;
+const variants_1 = require("./variants");
+const timeout_1 = require("../utils/timeout");
 function scoreDocument(doc) {
     if (!doc || doc.elements.length === 0)
         return 0;
@@ -72,11 +74,12 @@ async function rotateBuffer(buffer, angle) {
 async function detectBestOrientation(original, provider, opts) {
     const angles = [0, 90, 180, 270];
     const candidates = [];
+    const small = await (0, variants_1.downscaleForOcr)(original, 1200);
     for (const angle of angles) {
-        const rotated = await rotateBuffer(original, angle);
+        const rotated = await rotateBuffer(small, angle);
         let doc = null;
         try {
-            doc = await provider.processImage(rotated, opts);
+            doc = await (0, timeout_1.withTimeout)(provider.processImage(rotated, opts), 45000, `orientation@${angle}`);
         }
         catch {
             doc = null;

@@ -4,6 +4,8 @@ export interface Variant {
     buffer: Buffer;
     operations: string[];
 }
+export declare function downscaleForOcr(buffer: Buffer, maxDim?: number): Promise<Buffer>;
+export declare function padWhiteMargin(buffer: Buffer, ratio?: number): Promise<Buffer | null>;
 export declare function generateVariants(base: Buffer): Promise<Variant[]>;
 export declare function pickBestVariant(scored: Array<{
     variant: Variant;

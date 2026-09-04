@@ -79,6 +79,7 @@ details summary{font-size:12px;color:var(--mut);cursor:pointer}
 <div class="card" id="saveCard" style="display:none">
 <span class="badge">STEP 3 — SAVED</span>
 <p id="rSaved" class="ok"></p>
+<div class="stat" style="margin-bottom:10px"><small>Total spent (all saved)</small><b id="rSpent">–</b></div>
 <div class="hist" id="hist"></div>
 </div>
 </div>
@@ -117,12 +118,20 @@ goBtn.disabled=false;goBtn.textContent='Scan receipt';
 function step(n){[1,2,3].forEach(i=>document.getElementById('s'+i).classList.toggle('on',i<=n))}
 async function health(){try{const r=await fetch(BACKEND.replace(/\/$/,'')+'/health');document.getElementById('conn').textContent=r.ok?'backend connected':'backend down — browser OCR will be used';}catch{document.getElementById('conn').textContent='backend down — browser OCR will be used'}}
 health();setInterval(health,5000);
-function hist(id){
+function hist(id,total,currency){
 const h=JSON.parse(localStorage.getItem('demoSaved')||'[]');
-if(id){h.unshift({at:new Date().toLocaleString(),id});localStorage.setItem('demoSaved',JSON.stringify(h.slice(0,12)))}
-document.getElementById('hist').innerHTML=h.map(x=>'<span class="pill">'+String(x.id).slice(0,14)+'… · '+x.at+'</span>').join('')||'<span class="mut">nothing saved yet</span>';
+if(id){h.unshift({at:new Date().toLocaleString(),id,total:total??null,currency:currency||'EGP'});localStorage.setItem('demoSaved',JSON.stringify(h.slice(0,50)))}
+document.getElementById('hist').innerHTML=h.map(x=>'<span class="pill">'+String(x.id).slice(0,14)+'… · '+(x.total??'–')+' '+(x.currency||'')+'</span>').join('')||'<span class="mut">nothing saved yet</span>';
+const spent=h.reduce((a,x)=>a+(parseFloat(x.total)||0),0);
+document.getElementById('rSpent').textContent=h.length?Math.round(spent*100)/100+' '+(h[0].currency||'EGP')+' · '+h.length+' receipts':'–';
 }
 hist();
+function fixSubtotal(d){
+if((d.subtotal===null||d.subtotal===undefined)&&d.items&&d.items.length){
+d.subtotal=Math.round(d.items.reduce((a,b)=>a+(parseFloat(b.totalPrice)||0),0)*100)/100;
+}
+return d;
+}
 function lev(a,b){const m=a.length,n=b.length;const dp=Array.from({length:m+1},()=>Array(n+1).fill(0));for(let i=0;i<=m;i++)dp[i][0]=i;for(let j=0;j<=n;j++)dp[0][j]=j;for(let i=1;i<=m;i++)for(let j=1;j<=n;j++)dp[i][j]=a[i-1]===b[j-1]?dp[i-1][j-1]:1+Math.min(dp[i-1][j],dp[i][j-1],dp[i-1][j-1]);return dp[m][n]}
 function fixName(s){try{const low=String(s).toLowerCase().trim();if(low.length<3)return {name:s,fixed:false};let best=null,bd=99,bf=0;for(const p of TOPNAMES){const n=p[0],f=p[1];if(f<3)continue;if(n===low)return {name:s,fixed:false};const d=lev(low,n);if(d<=2&&(d<bd||(d===bd&&f>bf))){bd=d;bf=f;best=n}}if(best&&best!==low)return {name:best[0].toUpperCase()+best.slice(1),fixed:true};return {name:s,fixed:false}}catch(e){return {name:s,fixed:false}}}
 function fixMerch(s){try{const low=String(s||'').toLowerCase().trim();if(low.length<3)return s;for(const p of TOPMERCH){if(p[0]===low)return s}let best=null,bd=99,bf=0;for(const p of TOPMERCH){const n=p[0],f=p[1];if(f<2)continue;const d=lev(low,n);if(d<=2&&(d<bd||(d===bd&&f>bf))){bd=d;bf=f;best=n}}return best||s}catch(e){return s}}
@@ -225,14 +234,14 @@ const fd=new FormData();fd.append('image',file);
 let d,id,via;
 try{({d,id,via}=await via_backend(fd));st_ok('Server did the OCR (full 12k training).')}
 catch(e){({d,id,via}=await scanLocal(st_el()))}
-cur=d;curId=id;curVia=via;step(2);
+cur=fixSubtotal(d);curId=id;curVia=via;step(2);
 document.getElementById('engBadge').textContent=via==='server'?'⚡ server · 12k training':'📱 browser OCR · built-in training';
 document.getElementById('timeLine').textContent='Scanned in '+((Date.now()-t0)/1000).toFixed(1)+'s';
 document.getElementById('resCard').style.display='block';
 render();
 document.getElementById('saveCard').style.display='block';
 document.getElementById('rSaved').textContent='Saved as '+id+(via==='browser-ocr'?' (in this browser — start the server for backend training)':'');
-hist(id);step(3);st_ok('Done — result shown and saved.');
+hist(id,cur.total,cur.currency);step(3);st_ok('Done — result shown and saved.');
 document.getElementById('resCard').scrollIntoView({behavior:'smooth'});
 }catch(e){st_err('Error: '+e.message)}
 goBtn.disabled=false;goBtn.textContent='Scan receipt';

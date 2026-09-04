@@ -33,6 +33,8 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.downscaleForOcr = downscaleForOcr;
+exports.padWhiteMargin = padWhiteMargin;
 exports.generateVariants = generateVariants;
 exports.pickBestVariant = pickBestVariant;
 async function applyJimpVariant(buffer, ops) {
@@ -52,9 +54,79 @@ async function applyJimpVariant(buffer, ops) {
         return null;
     }
 }
+async function loadJimp() {
+    try {
+        const mod = await Promise.resolve(`${"jimp"}`).then(s => __importStar(require(s))).catch(() => null);
+        const mm = mod;
+        const ctor = (mm?.Jimp || mm?.default || mod);
+        if (typeof ctor !== "function" || typeof ctor.read !== "function")
+            return null;
+        return ctor;
+    }
+    catch {
+        return null;
+    }
+}
+async function encodeJimp(J, img) {
+    try {
+        const mime = J.MIME_JPEG || "image/jpeg";
+        if (typeof img.getBufferAsync === "function")
+            return await img.getBufferAsync(mime);
+        if (typeof img.getBuffer === "function") {
+            const out = (await img.getBuffer(mime));
+            if (out && typeof out.then === "function")
+                return (await out);
+            if (Buffer.isBuffer(out))
+                return out;
+        }
+        return null;
+    }
+    catch {
+        return null;
+    }
+}
+async function downscaleForOcr(buffer, maxDim = 1400) {
+    try {
+        const J = await loadJimp();
+        if (!J)
+            return buffer;
+        const src = await J.read(buffer);
+        const w = src.bitmap.width, h = src.bitmap.height;
+        const m = Math.max(w, h);
+        if (!m || m <= maxDim)
+            return buffer;
+        const ratio = maxDim / m;
+        src.resize?.({ w: Math.round(w * ratio), h: Math.round(h * ratio) });
+        return (await encodeJimp(J, src)) || buffer;
+    }
+    catch {
+        return buffer;
+    }
+}
+async function padWhiteMargin(buffer, ratio = 0.06) {
+    try {
+        const J = await loadJimp();
+        if (!J)
+            return null;
+        const src = await J.read(buffer);
+        const w = src.bitmap.width, h = src.bitmap.height;
+        if (!w || !h)
+            return null;
+        const m = Math.max(20, Math.round(Math.min(w, h) * ratio));
+        const canvas = new J({ width: w + 2 * m, height: h + 2 * m, color: 0xffffffff });
+        canvas.composite(src, m, m);
+        return await encodeJimp(J, canvas);
+    }
+    catch {
+        return null;
+    }
+}
 async function generateVariants(base) {
-    const variants = [{ name: "original", buffer: base, operations: ["original"] }];
-    const enhanced = await applyJimpVariant(base, (img) => {
+    const padded = await padWhiteMargin(base);
+    const src = padded || base;
+    const padOps = padded ? ["white_margin"] : [];
+    const variants = [{ name: "original", buffer: src, operations: [...padOps, "original"] }];
+    const enhanced = await applyJimpVariant(src, (img) => {
         const im = img;
         try {
             if (im.grayscale)
@@ -87,7 +159,7 @@ async function generateVariants(base) {
     });
     if (enhanced)
         variants.push({ name: "enhanced", buffer: enhanced, operations: ["grayscale", "contrast", "normalize", "sharpen", "resize"] });
-    const grayscale = await applyJimpVariant(base, (img) => {
+    const grayscale = await applyJimpVariant(src, (img) => {
         const im = img;
         try {
             if (im.grayscale)
@@ -99,7 +171,7 @@ async function generateVariants(base) {
     });
     if (grayscale)
         variants.push({ name: "grayscale", buffer: grayscale, operations: ["grayscale"] });
-    const thresholded = await applyJimpVariant(base, (img) => {
+    const thresholded = await applyJimpVariant(src, (img) => {
         const im = img;
         try {
             if (im.grayscale)

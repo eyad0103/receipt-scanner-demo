@@ -14,6 +14,7 @@ const validator_1 = require("../validation/validator");
 const paddleValidator_1 = require("../validation/paddleValidator");
 const receiptRepository_1 = require("../repositories/receiptRepository");
 const qrDetector_1 = require("../utils/qrDetector");
+const timeout_1 = require("../utils/timeout");
 const debugStore = new Map();
 function getPipelineDebug(receiptId) {
     return debugStore.get(receiptId);
@@ -55,7 +56,7 @@ class ReceiptService {
             for (const v of variants) {
                 let doc = null;
                 try {
-                    doc = await lightProvider.processImage(v.buffer);
+                    doc = await (0, timeout_1.withTimeout)(lightProvider.processImage(v.buffer), 90000, `variant:${v.name}`);
                 }
                 catch {
                     doc = null;
@@ -84,7 +85,7 @@ class ReceiptService {
             let finalDoc = ocrDoc;
             if (avgConf < 0.55 || ocrDoc.elements.length < 2) {
                 const hw = new handwritingProvider_1.HandwritingOcrProvider(this.baseOcr);
-                const hwDoc = await hw.processImage(bufferToOcr);
+                const hwDoc = await (0, timeout_1.withTimeout)(hw.processImage(bufferToOcr), 90000, "handwriting-fallback");
                 const hwAvg = hwDoc.elements.reduce((a, b) => a + b.confidence, 0) / Math.max(1, hwDoc.elements.length);
                 if (hwAvg > avgConf) {
                     finalDoc = hwDoc;
