@@ -54,7 +54,7 @@ footer{text-align:center;color:var(--mut);font-size:12px;padding:20px}
 <span class="badge">STEP 2 — FULL RESULT (tap any field to edit)</span>
 <div class="row">
 <div class="stat"><small>Merchant</small><b><input class="ed" id="eM" oninput="editHead('merchant',this.value)"/></b><span id="cM"></span></div>
-<div class="stat"><small>Total</small><b id="rT">–</b><span id="cT"></span></div>
+<div class="stat"><small>Total</small><b id="rT">–</b><span id="cT"></span><br/><select id="eC" onchange="if(cur){cur.currency=this.value;render()}" style="font-size:12px;margin-top:6px;padding:4px 8px;border-radius:8px;border:1px solid #ddd"><option>EGP</option><option>USD</option><option>EUR</option><option>SAR</option><option>AED</option><option>KWD</option><option>QAR</option><option>BHD</option></select></div>
 <div class="stat"><small>Subtotal</small><b id="rS">–</b></div>
 <div class="stat"><small>Tax / Discount</small><b id="rX">–</b></div>
 <div class="stat"><small>Payment</small><b id="rP">–</b></div>
@@ -95,6 +95,8 @@ function hist(id){const h=JSON.parse(localStorage.getItem('demoSaved')||'[]');if
 hist();
 function lev(a,b){const m=a.length,n=b.length;const dp=Array.from({length:m+1},()=>Array(n+1).fill(0));for(let i=0;i<=m;i++)dp[i][0]=i;for(let j=0;j<=n;j++)dp[0][j]=j;for(let i=1;i<=m;i++)for(let j=1;j<=n;j++)dp[i][j]=a[i-1]===b[j-1]?dp[i-1][j-1]:1+Math.min(dp[i-1][j],dp[i][j-1],dp[i-1][j-1]);return dp[m][n]}
 function fixName(s){try{const low=String(s).toLowerCase().trim();if(low.length<3)return s;let best=null,bd=99,bf=0;for(const p of TOPNAMES){const n=p[0],f=p[1];if(f<3)continue;if(n===low)return s;const d=lev(low,n);if(d<=2&&(d<bd||(d===bd&&f>bf))){bd=d;bf=f;best=n}}if(best&&best!==low)return {name:best[0].toUpperCase()+best.slice(1),fixed:true};return {name:s,fixed:false}}catch(e){return {name:s,fixed:false}}}
+const TOPMERCH=[["metro", 704], ["al rayan", 670], ["carrefour", 660], ["el madina", 650], ["hyper one", 644], ["lulu", 635], ["ragab sons", 630], ["panda", 627], ["go.restaurant", 626], ["bim", 626], ["seoudi", 621], ["kazyon", 621], ["awadallah", 606], ["kheir zaman", 603], ["fathalla", 601], ["spinneys", 571]];
+function fixMerch(s){try{const low=String(s||'').toLowerCase().trim();if(low.length<3)return s;for(const p of TOPMERCH){if(p[0]===low)return s}let best=null,bd=99,bf=0;for(const p of TOPMERCH){const n=p[0],f=p[1];if(f<2)continue;const d=lev(low,n);if(d<=2&&(d<bd||(d===bd&&f>bf))){bd=d;bf=f;best=n}}return best||s}catch(e){return s}}
 async function via_backend(fd){
 const ctl=new AbortController();const to=setTimeout(()=>ctl.abort(),6000);
 try{
@@ -109,7 +111,7 @@ throw new Error('server timed out');
 }
 function parseLocal(text){
 const lines=text.split('\n').map(l=>l.trim()).filter(Boolean);
-const merchant=(lines[0]||'Unknown').slice(0,40);
+const merchant=fixMerch((lines[0]||'Unknown').slice(0,40));
 const priceNum=s=>{const raw=(s.match(/[\d,]+\.\d{1,2}|[\d,]+/)||[])[0];if(!raw)return null;if(!/[.,]/.test(raw)&&raw.length>=3)return parseFloat(raw)/100;const m=raw.replace(/,/g,'').match(/(\d+\.\d{1,2}|\d+)/);return m?parseFloat(m[1]):null};
 let total=null;const tm=text.match(/(grand\s*total|total|amount|net)[^\d]{0,12}([\d,]+\.\d{1,2})/i);
 if(tm)total=priceNum(tm[2]);
@@ -130,13 +132,14 @@ return {merchant,total,currency:'EGP',items,rawText:text,confidence:0.8,status:'
 }
 async function scanLocal(st){
 st.innerHTML='No server — <b>real OCR in your browser</b> (tesseract.js)…';
-const {data:{text}}=await Tesseract.recognize(file,'eng');
+const {data:{text}}=await Tesseract.recognize(file,'eng+ara');
 return {d:parseLocal(text),id:'local_'+Date.now().toString(36),via:'browser-ocr'};
 }
 function pct(x){return x===null||x===undefined?'':(' · '+Math.round(x*100)+'%')}
 function render(){
 const d=cur;if(!d)return;
 document.getElementById('eM').value=d.merchant||'';
+const ec=document.getElementById('eC');if(d.currency&&[...ec.options].some(o=>o.value===d.currency))ec.value=d.currency;
 document.getElementById('cM').textContent='merchant'+pct(d.merchantConfidence);
 document.getElementById('rT').textContent=(d.total??'–')+' '+(d.currency||'EGP');
 document.getElementById('cT').textContent='total'+pct(d.totalConfidence);
@@ -156,7 +159,7 @@ const msg=document.getElementById('savMsg');if(!cur){msg.textContent='nothing to
 msg.textContent='Saving…';
 try{
 if(curVia==='server'){
-const r=await fetch(API()+'/receipts/'+curId,{method:'PATCH',headers:{'Content-Type':'application/json','x-user-id':'user_demo'},body:JSON.stringify({merchant:cur.merchant,items:cur.items.map(it=>({name:it.name,quantity:parseInt(it.quantity)||1,unitPrice:(parseFloat(it.totalPrice)||0)/(parseInt(it.quantity)||1),totalPrice:parseFloat(it.totalPrice)||0})),total:cur.total,status:'completed'})});
+const r=await fetch(API()+'/receipts/'+curId,{method:'PATCH',headers:{'Content-Type':'application/json','x-user-id':'user_demo'},body:JSON.stringify({merchant:cur.merchant,currency:cur.currency,items:cur.items.map(it=>({name:it.name,quantity:parseInt(it.quantity)||1,unitPrice:(parseFloat(it.totalPrice)||0)/(parseInt(it.quantity)||1),totalPrice:parseFloat(it.totalPrice)||0})),total:cur.total,status:'completed'})});
 if(!r.ok)throw new Error('save '+r.status);
 msg.innerHTML='<span class="ok">Saved to backend — and learned for next scans.</span>';
 }else{
