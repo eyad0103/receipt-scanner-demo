@@ -40,7 +40,7 @@ footer{text-align:center;color:var(--mut);font-size:12px;padding:20px}
 <div class="wrap">
 <div class="card">
 <span class="badge">STEP 1 — SCAN</span>
-<div class="drop" id="drop">Drop receipt image here or click to choose<input type="file" id="f" accept="image/*" hidden/></div>
+<div class="drop" id="drop"><span id="dropLabel">Drop receipt image here or click to choose</span><br/><img id="pv" style="display:none;max-width:100%;max-height:280px;border-radius:12px;margin-top:12px;box-shadow:0 4px 18px #0002"/><input type="file" id="f" accept="image/*" hidden/></div>
 <br/><button class="btn" id="go" onclick="scan()">Scan receipt</button>
 <p id="st" style="font-size:13px"></p>
 </div>
@@ -74,7 +74,7 @@ drop.onclick=()=>fi.click();
 ['dragleave','drop'].forEach(e=>drop.addEventListener(e,ev=>{ev.preventDefault();drop.classList.remove('over')}));
 drop.addEventListener('drop',ev=>{setFile(ev.dataTransfer.files[0])});
 fi.onchange=e=>setFile(e.target.files[0]);
-function setFile(f){if(!f)return;file=f;drop.innerHTML='';const im=document.createElement('img');im.src=URL.createObjectURL(f);drop.appendChild(im)}
+function setFile(f){if(!f||!f.type.startsWith('image/')){if(f)alert('That is not an image — pick a photo of a receipt');fi.value='';return}file=f;const pv=document.getElementById('pv');pv.src=URL.createObjectURL(f);pv.style.display='block';document.getElementById('dropLabel').textContent=f.name+' — tap to change';document.getElementById('st').textContent='Ready — hit Scan receipt.'}
 function step(n){[1,2,3].forEach(i=>document.getElementById('s'+i).classList.toggle('on',i<=n))}
 async function health(){try{const r=await fetch(BACKEND.replace(/\/$/,'')+'/health');document.getElementById('conn').textContent=r.ok?'backend connected':'backend down — run run-demo.bat';}catch{document.getElementById('conn').textContent='backend down — run run-demo.bat'}}
 health();setInterval(health,5000);
