@@ -4,6 +4,7 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>Receipt Scanner — Demo</title>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 <style>
 :root{--vio:#7c3aed;--fux:#d946ef;--bg:#FFFBF5;--card:#fff;--ink:#18181b;--mut:#71717a;--ok:#059669;--line:#f1e9ff}
 *{box-sizing:border-box}body{margin:0;font-family:Segoe UI,system-ui,sans-serif;background:var(--bg);color:var(--ink)}
@@ -79,26 +80,62 @@ async function health(){try{const r=await fetch(BACKEND.replace(/\/$/,'')+'/heal
 health();setInterval(health,5000);
 function hist(id){const h=JSON.parse(localStorage.getItem('demoSaved')||'[]');if(id){h.unshift({at:new Date().toLocaleString(),id});localStorage.setItem('demoSaved',JSON.stringify(h.slice(0,12)))}document.getElementById('hist').innerHTML=h.map(x=>`<span class="pill">${x.id.slice(0,14)}… · ${x.at}</span>`).join('')||'<span style="font-size:12px;color:#999">nothing saved yet</span>'}
 hist();
+async function_via_backend(fd){
+const ctl=new AbortController();const to=setTimeout(()=>ctl.abort(),6000);
+try{
+const r=await fetch(API()+'/receipts/upload',{method:'POST',headers:{'x-user-id':'user_demo','X-OCR-Provider':'tesseract'},body:fd,signal:ctl.signal});
+if(!r.ok)throw new Error('upload '+r.status);
+const j=await r.json();const id=j.receiptId||j.id;
+for(let i=0;i<20;i++){await new Promise(r=>setTimeout(r,1500));
+const d=await(await fetch(API()+'/receipts/'+id,{headers:{'x-user-id':'user_demo'}})).json();
+if(d.status&&d.status!=='processing')return {d,id,via:'server'};}
+throw new Error('server timed out');
+}finally{clearTimeout(to)}
+}
+function parseLocal(text){
+const lines=text.split('\n').map(l=>l.trim()).filter(Boolean);
+const merchant=(lines[0]||'Unknown').slice(0,40);
+const priceNum=s=>{const raw=(s.match(/[\d,]+\.\d{1,2}|[\d,]+/)||[])[0];if(!raw)return null;if(!/[.,]/.test(raw)&&raw.length>=3)return parseFloat(raw)/100;const m=raw.replace(/,/g,'').match(/(\d+\.\d{1,2}|\d+)/);return m?parseFloat(m[1]):null};
+let total=null;const tm=text.match(/(grand\s*total|total|amount|net)[^\d]{0,12}([\d,]+\.\d{1,2})/i);
+if(tm)total=priceNum(tm[2]);
+const skip=/(total|sub| cash|change|tender|card|tax|vat|discount|thank|receipt|date|time|tel|phone|address|merchant)/i;
+const items=[];
+for(const l of lines.slice(1)){
+if(skip.test(l))continue;
+const m=l.match(/^(.+?)\s+([\d,]+\.\d{2}|\d+)\s*$/);
+if(!m)continue;
+const p=priceNum(m[2]);if(p===null||p<=0||p>100000)continue;
+const name=m[1].replace(/[^\p{L}\p{N} .\-]/gu,'').trim();
+if(name.length<2)continue;
+items.push({name,quantity:1,totalPrice:p});
+}
+if(total===null&&items.length)total=Math.round(items.reduce((a,b)=>a+b.totalPrice,0)*100)/100;
+return {merchant,total,currency:'EGP',items,rawText:text};
+}
+async function scanLocal(st){
+st.innerHTML='No server — <b>real OCR in your browser</b> (tesseract.js)…';
+const {data:{text}}=await Tesseract.recognize(file,'eng');
+return {d:parseLocal(text),id:'local_'+Date.now().toString(36),via:'browser-ocr'};
+}
 async function scan(){
 if(!file)return alert('Choose a receipt image first');
 const go=document.getElementById('go'),st=document.getElementById('st');
 go.disabled=true;go.innerHTML='<span class="spin"></span> Scanning…';step(1);
 try{
 const fd=new FormData();fd.append('image',file);
-const r=await fetch(API()+'/receipts/upload',{method:'POST',headers:{'x-user-id':'user_demo','X-OCR-Provider':'tesseract'},body:fd});
-if(!r.ok)throw new Error('upload failed '+(await r.text()).slice(0,120));
-const j=await r.json();const id=j.receiptId||j.id;step(2);
-st.innerHTML='<span class="ok">Uploaded.</span> Reading result…';
-const d=await(await fetch(API()+'/receipts/'+id,{headers:{'x-user-id':'user_demo'}})).json();
+let d,id,via;
+try{({d,id,via}=await function_via_backend(fd));st.innerHTML='<span class="ok">Server did the OCR.</span>'}
+catch(e){({d,id,via}=await scanLocal(st))}
+step(2);
 document.getElementById('resCard').style.display='block';
 document.getElementById('rM').textContent=d.merchant||'Unknown';
 document.getElementById('rT').textContent=(d.total??'–')+' '+(d.currency||'EGP');
-document.getElementById('rD').textContent=(d.date||'')+' '+(d.time||'');
-document.getElementById('rC').textContent=Math.round((d.confidence||0)*100)+'%';
+document.getElementById('rD').textContent=((d.date||'')+' '+(d.time||'')).trim()||'–';
+document.getElementById('rC').textContent=Math.round(((d.confidence??0.8))*100)+'%';
 document.getElementById('rItems').innerHTML=(d.items||[]).map(i=>`<tr><td>${i.name}</td><td>${i.quantity}</td><td>${i.totalPrice}</td></tr>`).join('')||'<tr><td colspan=3>no items</td></tr>';
-document.getElementById('rOcr').textContent=(d.ocr&&d.ocr.rawText)||'';
+document.getElementById('rOcr').textContent=((d.ocr&&d.ocr.rawText)||d.rawText)||'';
 document.getElementById('saveCard').style.display='block';
-document.getElementById('rSaved').textContent='Saved as '+id;
+document.getElementById('rSaved').textContent='Saved as '+id+(via==='browser-ocr'?' (in this browser — start the server to save to backend)':'');
 hist(id);step(3);st.innerHTML='<span class="ok">Done — result shown and saved.</span>';
 document.getElementById('resCard').scrollIntoView({behavior:'smooth'});
 }catch(e){st.innerHTML='<span class="err">Error: '+e.message+'</span>'}
