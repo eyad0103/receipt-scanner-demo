@@ -15,7 +15,8 @@
 .step.on{background:#fff;color:var(--vio)}
 .wrap{max-width:920px;margin:-24px auto 40px;padding:0 14px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:20px;margin:14px 0;box-shadow:0 8px 30px #7c3aed14}
-.drop{border:2px dashed #c4b5fd;border-radius:16px;padding:26px;text-align:center;cursor:pointer;transition:.2s;background:#faf5ff}
+.drop{position:relative;border:2px dashed #c4b5fd;border-radius:16px;padding:26px;text-align:center;cursor:pointer;transition:.2s;background:#faf5ff;overflow:hidden}
+.drop input[type=file]{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;font-size:100px}
 .drop:hover,.drop.over{border-color:var(--vio);background:#f5efff}
 .drop img{max-width:100%;max-height:280px;border-radius:12px;margin-top:12px;box-shadow:0 4px 18px #0002}
 .btn{background:linear-gradient(135deg,var(--vio),var(--fux));color:#fff;border:0;border-radius:14px;padding:13px 30px;font-weight:800;font-size:15px;cursor:pointer;box-shadow:0 6px 20px #7c3aed55;width:100%}
@@ -40,7 +41,8 @@ footer{text-align:center;color:var(--mut);font-size:12px;padding:20px}
 <div class="wrap">
 <div class="card">
 <span class="badge">STEP 1 — SCAN</span>
-<div class="drop" id="drop"><span id="dropLabel">Drop receipt image here or click to choose</span><br/><img id="pv" style="display:none;max-width:100%;max-height:280px;border-radius:12px;margin-top:12px;box-shadow:0 4px 18px #0002"/><input type="file" id="f" accept="image/*" hidden/></div>
+<div class="drop" id="drop"><span id="dropLabel">Tap here to choose a receipt photo</span><br/><img id="pv" style="display:none;max-width:100%;max-height:280px;border-radius:12px;margin-top:12px;box-shadow:0 4px 18px #0002"/><input type="file" id="f" accept="image/*"/></div>
+<div style="text-align:center;margin-top:8px"><label for="f" style="display:inline-block;font-size:13px;font-weight:700;color:var(--vio);background:#ede9fe;padding:8px 20px;border-radius:999px;cursor:pointer">📷 Choose image</label></div>
 <br/><button class="btn" id="go" onclick="scan()">Scan receipt</button>
 <p id="st" style="font-size:13px"></p>
 </div>
