@@ -82,7 +82,7 @@ async function health(){try{const r=await fetch(BACKEND.replace(/\/$/,'')+'/heal
 health();setInterval(health,5000);
 function hist(id){const h=JSON.parse(localStorage.getItem('demoSaved')||'[]');if(id){h.unshift({at:new Date().toLocaleString(),id});localStorage.setItem('demoSaved',JSON.stringify(h.slice(0,12)))}document.getElementById('hist').innerHTML=h.map(x=>`<span class="pill">${x.id.slice(0,14)}… · ${x.at}</span>`).join('')||'<span style="font-size:12px;color:#999">nothing saved yet</span>'}
 hist();
-async function_via_backend(fd){
+async function via_backend(fd){
 const ctl=new AbortController();const to=setTimeout(()=>ctl.abort(),6000);
 try{
 const r=await fetch(API()+'/receipts/upload',{method:'POST',headers:{'x-user-id':'user_demo','X-OCR-Provider':'tesseract'},body:fd,signal:ctl.signal});
