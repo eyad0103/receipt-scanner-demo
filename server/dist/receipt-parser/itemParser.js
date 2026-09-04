@@ -25,13 +25,38 @@ function cleanName(name) {
         .replace(/\s+/g, " ")
         .trim();
 }
+let cachedDict = null;
+let cachedDictMtime = 0;
+function productDict() {
+    try {
+        const fs = require("fs");
+        const path = require("path");
+        const p = path.join(process.cwd(), "data", "verified.json");
+        const mt = fs.statSync(p).mtimeMs;
+        if (!cachedDict || mt !== cachedDictMtime) {
+            cachedDict = require("../training/dataset").getProductDictionary();
+            cachedDictMtime = mt;
+        }
+        return cachedDict;
+    }
+    catch {
+        return new Map();
+    }
+}
+function shortNameAllowed(name, dict) {
+    if (name.length >= 3)
+        return true;
+    return dict.has(name.toLowerCase().trim());
+}
 function parseItemLine(el) {
     let text = stripCurrencyAffix(el.text.trim());
     if (!text)
         return null;
+    if (/\b(SEPP|APPR|APPROVAL|AUTH(\.|ORIZATION)?|TRACE|REF\s?NO|CARD\s?NO|ACCT|TERMINAL|MERCHANT\s?ID)\b/i.test(text))
+        return null;
+    const dict = productDict();
     try {
         const { correctProductName } = require("../training/learner");
-        const dict = require("../training/dataset").getProductDictionary();
         if (dict.size > 5) {
             const words = text.split(/\s+/);
             const first = words[0];
@@ -63,20 +88,23 @@ function parseItemLine(el) {
         const qty = parseInt(qtyTotalMatch[2], 10);
         const rawTotal = qtyTotalMatch[3];
         const { amount: total } = (0, normalize_1.normalizePrice)(rawTotal);
-        if (name.length < 2 || qty > 100 || total === null)
-            return null;
-        if (/^(TOTAL|SUBTOTAL|TAX|VAT|DISCOUNT)/i.test(name))
-            return null;
-        const unit = qty > 0 ? Math.round((total / qty) * 100) / 100 : null;
-        return { name, quantity: qty, unitPrice: unit, totalPrice: total, confidence: el.confidence * 0.88, boundingBox: el.boundingBox };
+        const valid = name.length >= 2 && qty >= 1 && qty <= 100 && total !== null
+            && /[A-Za-z\u0600-\u06FF]/.test(name)
+            && !/^(TOTAL|SUBTOTAL|TAX|VAT|DISCOUNT)/i.test(name);
+        if (valid && total !== null) {
+            const unit = qty > 0 ? Math.round((total / qty) * 100) / 100 : null;
+            return { name, quantity: qty, unitPrice: unit, totalPrice: total, confidence: el.confidence * 0.88, boundingBox: el.boundingBox };
+        }
     }
     const leadingQtyMatch = text.match(/^(\d+)\s+(.*?)\s+(\d+[.,]?\d*)$/);
     if (leadingQtyMatch) {
         const qty = parseInt(leadingQtyMatch[1], 10);
-        const name = cleanName(leadingQtyMatch[2]);
+        const name = cleanName(leadingQtyMatch[2]).replace(/\s+\d$/, "");
         const rawTotal = leadingQtyMatch[3];
         const { amount: total } = (0, normalize_1.normalizePrice)(rawTotal);
-        if (name.length < 2 || qty > 100 || total === null)
+        if (name.length < 2 || qty < 1 || qty > 100 || total === null)
+            return null;
+        if (!/[A-Za-z\u0600-\u06FF]/.test(name))
             return null;
         if (/^(TOTAL|SUBTOTAL|TAX|VAT|DISCOUNT)/i.test(name))
             return null;
@@ -87,7 +115,7 @@ function parseItemLine(el) {
     if (dashMatch && /[A-Za-z\u0600-\u06FF]/.test(dashMatch[1])) {
         const name = cleanName(dashMatch[1]);
         const { amount: total } = (0, normalize_1.normalizePrice)(dashMatch[2]);
-        if (name.length >= 2 && total !== null) {
+        if (name.length >= 2 && shortNameAllowed(name, dict) && total !== null) {
             if (name.split(/\s+/).length <= 15 && total > 0 && total < 100000) {
                 if (!/^(TOTAL|SUBTOTAL|TAX|VAT|DISCOUNT|BILL|SIGNATURE|CASH|CHANGE)/i.test(name)) {
                     return { name, quantity: 1, unitPrice: total, totalPrice: total, confidence: el.confidence * 0.85, boundingBox: el.boundingBox };
@@ -98,9 +126,8 @@ function parseItemLine(el) {
     const simpleMatch = text.match(/^(.*?)\s+(\d+[.,]?\d*)$/);
     if (simpleMatch) {
         const name = cleanName(simpleMatch[1]);
-        const rawTotal = simpleMatch[2];
-        const { amount: total } = (0, normalize_1.normalizePrice)(rawTotal);
-        if (name.length < 2 || total === null)
+        const { amount: total } = (0, normalize_1.normalizePrice)(simpleMatch[2]);
+        if (name.length < 2 || !shortNameAllowed(name, dict) || total === null)
             return null;
         if (name.split(/\s+/).length > 8)
             return null;

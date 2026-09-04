@@ -78,9 +78,15 @@ function normalizePrice(raw) {
         else
             currency = m.replace("$", "USD").replace("LE", "EGP");
     }
-    const cleaned = trimmed.replace(/[^0-9.,-]/g, "").replace(/,/g, ".");
+    let cleaned = trimmed.replace(/[^0-9.,-]/g, "");
     if (!cleaned)
         return { amount: null, currency };
+    if (/^\d{1,3}(,\d{3})+$/.test(cleaned))
+        cleaned = cleaned.replace(/,/g, "");
+    else if (/^\d{1,3}(\.\d{3})+$/.test(cleaned))
+        cleaned = cleaned.replace(/\./g, "");
+    else
+        cleaned = cleaned.replace(/,/g, ".");
     const parts = cleaned.split(".");
     let numericStr;
     if (parts.length > 2) {
@@ -95,7 +101,10 @@ function normalizePrice(raw) {
         return { amount: null, currency };
     const hasDecimal = /[.,]/.test(trimmed);
     if (!hasDecimal && /^\d{3,5}$/.test(cleaned) && amount >= 100) {
-        if (amount >= 1000 && amount < 10000) {
+        if (amount >= 10000 && amount < 100000) {
+            amount = Math.round((amount / 100) * 100) / 100;
+        }
+        else if (amount >= 1000 && amount < 10000) {
             const maybeCents = amount / 100;
             const maybeTens = amount / 10;
             if (maybeCents >= 5 && maybeCents <= 500) {

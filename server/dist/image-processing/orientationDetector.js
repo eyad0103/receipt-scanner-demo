@@ -38,7 +38,7 @@ exports.correctOrientation = correctOrientation;
 const variants_1 = require("./variants");
 const timeout_1 = require("../utils/timeout");
 function scoreDocument(doc) {
-    if (!doc || doc.elements.length === 0)
+    if (!doc || doc.elements.length === 0 || (doc.provider || "").toLowerCase().includes("mock"))
         return 0;
     const regions = doc.elements.length;
     const avgConf = doc.elements.reduce((a, b) => a + b.confidence, 0) / regions;

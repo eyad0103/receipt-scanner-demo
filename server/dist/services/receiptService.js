@@ -19,8 +19,11 @@ const debugStore = new Map();
 function getPipelineDebug(receiptId) {
     return debugStore.get(receiptId);
 }
+function isMockDoc(doc) {
+    return !!doc && (doc.provider || "").toLowerCase().includes("mock");
+}
 function scoreDoc(doc) {
-    if (!doc || doc.elements.length === 0)
+    if (!doc || doc.elements.length === 0 || isMockDoc(doc))
         return 0;
     const avg = doc.elements.reduce((a, b) => a + b.confidence, 0) / doc.elements.length;
     const words = doc.elements.filter((e) => /[A-Za-z\u0600-\u06FF]{2,}/.test(e.text)).length;
@@ -70,8 +73,8 @@ class ReceiptService {
             debug.selectedVariant = best?.variant.name || "original";
             let ocrDoc = best?.doc || null;
             let bufferToOcr = best?.variant.buffer || oriented;
-            if (!ocrDoc || ocrDoc.elements.length === 0) {
-                ocrDoc = orientation.bestDoc;
+            if (!ocrDoc || ocrDoc.elements.length === 0 || isMockDoc(ocrDoc)) {
+                ocrDoc = isMockDoc(orientation.bestDoc) ? null : orientation.bestDoc;
                 bufferToOcr = oriented;
             }
             if (!ocrDoc)
