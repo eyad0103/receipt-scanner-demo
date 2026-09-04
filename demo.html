@@ -7,66 +7,74 @@
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 <style>
 :root{--vio:#7c3aed;--fux:#d946ef;--bg:#FFFBF5;--card:#fff;--ink:#18181b;--mut:#71717a;--ok:#059669;--line:#f1e9ff}
-*{box-sizing:border-box}body{margin:0;font-family:Segoe UI,system-ui,sans-serif;background:var(--bg);color:var(--ink)}
-.hero{background:linear-gradient(135deg,#7c3aed,#d946ef);color:#fff;padding:34px 22px 46px;text-align:center;border-radius:0 0 28px 28px}
-.hero h1{margin:0;font-size:26px;letter-spacing:-.5px}.hero p{opacity:.9;font-size:13px;margin:8px 0 0}
+*{box-sizing:border-box}body{margin:0;font-family:"Segoe UI",system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased}
+.hero{background:linear-gradient(135deg,#7c3aed,#d946ef);color:#fff;padding:34px 22px 48px;text-align:center;border-radius:0 0 28px 28px}
+.hero h1{margin:0;font-size:26px;letter-spacing:-.5px}.hero p{opacity:.92;font-size:13px;margin:8px 0 0}
 .steps{display:flex;gap:8px;justify-content:center;margin-top:16px;flex-wrap:wrap}
-.step{font-size:12px;font-weight:700;background:#ffffff2e;padding:6px 14px;border-radius:999px}
+.step{font-size:12px;font-weight:700;background:#ffffff2e;padding:6px 14px;border-radius:999px;transition:.3s}
 .step.on{background:#fff;color:var(--vio)}
 .wrap{max-width:920px;margin:-24px auto 40px;padding:0 14px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:20px;margin:14px 0;box-shadow:0 8px 30px #7c3aed14}
 .drop{position:relative;border:2px dashed #c4b5fd;border-radius:16px;padding:26px;text-align:center;cursor:pointer;transition:.2s;background:#faf5ff;overflow:hidden}
 .drop input[type=file]{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;font-size:100px}
 .drop:hover,.drop.over{border-color:var(--vio);background:#f5efff}
-.drop img{max-width:100%;max-height:280px;border-radius:12px;margin-top:12px;box-shadow:0 4px 18px #0002}
-.btn{background:linear-gradient(135deg,var(--vio),var(--fux));color:#fff;border:0;border-radius:14px;padding:13px 30px;font-weight:800;font-size:15px;cursor:pointer;box-shadow:0 6px 20px #7c3aed55;width:100%}
-.btn:disabled{opacity:.5;cursor:wait}
+.pv{display:none;max-width:100%;max-height:280px;border-radius:12px;margin:12px auto 0;box-shadow:0 4px 18px #0002}
+.choose{display:text-align:center;margin-top:8px}
+.choose label{display:inline-block;font-size:13px;font-weight:700;color:var(--vio);background:#ede9fe;padding:8px 20px;border-radius:999px;cursor:pointer}
+.btn{background:linear-gradient(135deg,var(--vio),var(--fux));color:#fff;border:0;border-radius:14px;padding:13px 30px;font-weight:800;font-size:15px;cursor:pointer;box-shadow:0 6px 20px #7c3aed55;width:100%;transition:.2s}
+.btn:disabled{opacity:.45;cursor:not-allowed;box-shadow:none}
 .btn2{background:#ede9fe;color:var(--vio);border:0;border-radius:10px;padding:8px 16px;font-weight:700;font-size:13px;cursor:pointer}
 .row{display:grid;grid-template-columns:1fr 1fr;gap:14px}@media(max-width:640px){.row{grid-template-columns:1fr}}
 .stat{background:#faf5ff;border-radius:14px;padding:12px}.stat small{color:var(--mut);font-size:11px;text-transform:uppercase;letter-spacing:.5px}.stat b{font-size:20px;display:block}.stat span{font-size:11px;color:var(--mut)}
+.stat select{font-size:12px;margin-top:6px;padding:4px 8px;border-radius:8px;border:1px solid #ddd;background:#fff}
 table{width:100%;border-collapse:collapse;font-size:13px}td,th{padding:8px;border-bottom:1px solid #f4f4f5;text-align:left}th{color:var(--mut);font-size:11px;text-transform:uppercase}
 pre{background:#18181b;color:#a7f3d0;border-radius:12px;padding:12px;font-size:11px;max-height:180px;overflow:auto;white-space:pre-wrap}
 .hist{display:flex;gap:8px;flex-wrap:wrap}.pill{font-size:12px;background:#f4f4f5;border-radius:999px;padding:6px 12px}
 .badge{display:inline-block;font-size:11px;font-weight:800;color:var(--vio);background:#ede9fe;border-radius:999px;padding:3px 12px;margin-bottom:8px}
-.ok{color:var(--ok);font-weight:700}.err{color:#dc2626;font-weight:700}
+.eng{font-size:11px;font-weight:800;color:var(--ok);background:#d1fae5;border-radius:999px;padding:3px 12px;margin-bottom:8px;display:inline-block}
+.ok{color:var(--ok);font-weight:700}.err{color:#dc2626;font-weight:700}.mut{color:var(--mut);font-size:13px}
 .spin{display:inline-block;width:14px;height:14px;border:2px solid #fff;border-top-color:transparent;border-radius:50%;animation:s 1s linear infinite;vertical-align:-2px}@keyframes s{to{transform:rotate(360deg)}}
-.ed{width:100%;font-size:13px;padding:6px 8px;border:1px solid #e4e4e7;border-radius:8px}.ed:focus{outline:2px solid #c4b5fd;border-color:var(--vio)}
-input[type=number].ed{width:70px}.xbtn{background:#fee2e2;color:#dc2626;border:0;border-radius:8px;padding:6px 10px;cursor:pointer;font-weight:700}
+.ed{width:100%;font-size:13px;padding:6px 8px;border:1px solid #e4e4e7;border-radius:8px;font-family:inherit}.ed:focus{outline:2px solid #c4b5fd;border-color:var(--vio)}
+input[type=number].ed{width:72px}.xbtn{background:#fee2e2;color:#dc2626;border:0;border-radius:8px;padding:6px 10px;cursor:pointer;font-weight:700}
 .fix{font-size:10px;color:var(--vio);font-weight:700}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;align-items:center}
 footer{text-align:center;color:var(--mut);font-size:12px;padding:20px}
+footer input{width:220px;font-size:12px;padding:4px 8px;border-radius:8px;border:1px solid #ddd}
+details summary{font-size:12px;color:var(--mut);cursor:pointer}
 </style>
 </head>
 <body>
 <div class="hero">
 <h1>Receipt Scanner — Live Demo</h1>
-<p>Main features only: <b>Scan → Result → Save</b> · Engine: Tesseract (fast, offline)</p>
+<p>Scan → Result → Save · Tesseract OCR + 12k training corrections</p>
 <div class="steps"><span class="step on" id="s1">1 · Scan</span><span class="step" id="s2">2 · Result</span><span class="step" id="s3">3 · Saved</span></div>
 </div>
 <div class="wrap">
 <div class="card">
 <span class="badge">STEP 1 — SCAN</span>
-<div class="drop" id="drop"><span id="dropLabel">Tap here to choose a receipt photo</span><br/><img id="pv" style="display:none"/><input type="file" id="f" accept="image/*"/></div>
-<div style="text-align:center;margin-top:8px"><label for="f" style="display:inline-block;font-size:13px;font-weight:700;color:var(--vio);background:#ede9fe;padding:8px 20px;border-radius:999px;cursor:pointer">📷 Choose image</label></div>
-<br/><button class="btn" id="go" onclick="scan()">Scan receipt</button>
-<p id="st" style="font-size:13px"></p>
+<div class="drop" id="drop"><span id="dropLabel">Tap here to choose a receipt photo</span><br/><img class="pv" id="pv" alt="receipt preview"/><input type="file" id="f" accept="image/*"/></div>
+<div class="choose"><label for="f">📷 Choose image</label></div>
+<br/><button class="btn" id="go" onclick="scan()" disabled>Pick an image first</button>
+<p id="st" class="mut"></p>
 </div>
 <div class="card" id="resCard" style="display:none">
-<span class="badge">STEP 2 — FULL RESULT (tap any field to edit)</span>
+<span class="badge">STEP 2 — FULL RESULT</span> <span class="eng" id="engBadge"></span>
+<p class="mut" id="timeLine" style="margin:0 0 10px"></p>
 <div class="row">
 <div class="stat"><small>Merchant</small><b><input class="ed" id="eM" oninput="editHead('merchant',this.value)"/></b><span id="cM"></span></div>
-<div class="stat"><small>Total</small><b id="rT">–</b><span id="cT"></span><br/><select id="eC" onchange="if(cur){cur.currency=this.value;render()}" style="font-size:12px;margin-top:6px;padding:4px 8px;border-radius:8px;border:1px solid #ddd"><option>EGP</option><option>USD</option><option>EUR</option><option>SAR</option><option>AED</option><option>KWD</option><option>QAR</option><option>BHD</option></select></div>
+<div class="stat"><small>Total</small><b id="rT">–</b><span id="cT"></span><br/><select id="eC" onchange="if(cur){cur.currency=this.value;render()}"><option>EGP</option><option>USD</option><option>EUR</option><option>SAR</option><option>AED</option><option>KWD</option><option>QAR</option><option>BHD</option></select></div>
 <div class="stat"><small>Subtotal</small><b id="rS">–</b></div>
 <div class="stat"><small>Tax / Discount</small><b id="rX">–</b></div>
 <div class="stat"><small>Payment</small><b id="rP">–</b></div>
 <div class="stat"><small>Date · Status</small><b id="rD" style="font-size:15px">–</b></div>
 </div>
-<br/><table><thead><tr><th>Item (rename ✎)</th><th>Qty</th><th>Price ✎</th><th></th></tr></thead><tbody id="rItems"></tbody></table>
-<div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">
+<br/><table><thead><tr><th>Item (tap to rename)</th><th>Qty</th><th>Price</th><th></th></tr></thead><tbody id="rItems"></tbody></table>
+<div class="toolbar">
 <button class="btn2" onclick="addItem()">+ Add item</button>
 <button class="btn2" onclick="saveEdits()">💾 Save corrections</button>
-<span id="savMsg" style="font-size:12px"></span>
+<span id="savMsg" class="mut"></span>
 </div>
-<br/><details><summary style="font-size:12px;color:var(--mut);cursor:pointer">Raw OCR text</summary><pre id="rOcr"></pre></details>
+<br/><details><summary>Raw OCR text</summary><pre id="rOcr"></pre></details>
 </div>
 <div class="card" id="saveCard" style="display:none">
 <span class="badge">STEP 3 — SAVED</span>
@@ -74,28 +82,49 @@ footer{text-align:center;color:var(--mut);font-size:12px;padding:20px}
 <div class="hist" id="hist"></div>
 </div>
 </div>
-<footer>Receipt Scanner demo · backend <input id="be" style="width:220px;font-size:12px;padding:4px 8px;border-radius:8px;border:1px solid #ddd" value="http://localhost:3000"/> <button onclick="saveBe()" style="font-size:12px">set</button> · <span id="conn">checking backend…</span></footer>
+<footer>Receipt Scanner demo · backend <input id="be" value="http://localhost:3000"/> <button onclick="saveBe()">set</button> · <span id="conn">checking backend…</span></footer>
 <script>
 const TOPNAMES=[["hawawshi", 341], ["salt 500g", 338], ["tissues box", 336], ["حلاوة", 333], ["tomato paste", 327], ["مناديل", 326], ["detergent 1kg", 326], ["toothpaste", 323], ["tahina", 319], ["sugar 1kg", 319], ["eggs 10", 318], ["water 1.5l", 318], ["تونة", 315], ["shawerma sandwich", 314], ["liver", 314], ["coffee 100g", 309], ["سكر", 308], ["شاي", 308], ["lentils 500g", 308], ["macarona", 306], ["foul medammes", 306], ["شيبسي", 306], ["cake hohos", 305], ["koshary box", 305], ["nescafe", 304], ["mahshi mix", 304], ["water 600ml", 304], ["tuna can", 304], ["fish bolti", 304], ["biscuits", 303], ["milk 1l", 303], ["goulash", 303], ["filo pastry", 303], ["فراخ", 301], ["foul 400g", 301], ["cheddar", 301], ["زيت", 300], ["بلح", 300], ["زبادي", 299], ["nuts mix", 299], ["معجون سنان", 299], ["صابون", 299], ["white cheese", 299], ["croissant", 299], ["لبن", 298], ["عيش بلدي", 298], ["beans white", 298], ["mayonnaise", 297], ["peanuts", 297], ["yogurt", 296], ["مكرونة", 296], ["بسكويت", 296], ["bread fino", 296], ["oil 1l", 295], ["eggs 30", 295], ["ketchup", 295], ["tea 250g", 295], ["قهوة", 294], ["بيض", 293], ["بيبسي", 293], ["dates 500g", 293], ["sardines", 293], ["جبنة", 292], ["فول سوداني", 292], ["ghee 500g", 292], ["rice pudding", 291], ["feteer", 290], ["rice 1kg", 290], ["عسل", 290], ["chickpeas", 290], ["bread baladi", 290], ["roz bel laban", 290], ["pepsi 330ml", 289], ["vinegar", 289], ["molokhia", 289], ["pepsi 1l", 289], ["peas frozen", 289], ["طحينة", 288], ["مسحوق غسيل", 288], ["donuts", 288], ["flour 1kg", 288], ["فول", 287], ["taameya mix", 287], ["soap bar", 287], ["shampoo", 287], ["liption tea", 287], ["jam fig", 286], ["coca cola", 285], ["chocolate corona", 285], ["milk 500ml", 285], ["sunflower oil", 285], ["شامبو", 285], ["chicken baneh", 284], ["toilet paper 4", 284], ["أرز", 283], ["honey 250g", 283], ["pasta 400g", 281], ["mirinda", 281], ["مربى", 281], ["beef 500g", 279], ["turkish coffee", 279], ["chipsy", 278], ["minced meat", 278], ["butter", 277], ["مياه", 276], ["طعمية", 276], ["rice 5kg", 274], ["cheese", 273], ["شيكولاتة", 270], ["chicken 1kg", 270], ["chocolate galaxy", 269], ["sprite", 265], ["mustard", 263], ["kofta sandwich", 263], ["okra frozen", 257], ["dish soap", 255], ["sunflower seeds", 252], ["halawa", 251], ["fayrouz", 247], ["الباقي", 40], ["علبة", 38], ["خصم", 29], ["bread", 24], ["الإجمالي", 23], ["عدد المنتجات", 21], ["milk", 16], ["oil", 16], ["nasi putih", 16], ["النقديه", 15], ["water", 14], ["mineral water", 14], ["chips", 13], ["rice", 13], ["المدفوع", 13], ["الاجمالي", 13], ["chocolate", 12], ["coffee", 12], ["twist donut", 12], ["ما جي خلطة", 12], ["طماطم", 11], ["redbean bread", 10], ["الصافي", 10], ["الباقي:", 10], ["وَصْفَ صَنْفٍ ١٣٦٠-١٣٦٠", 10], ["الموزع", 10], ["مطابق بالوران", 9], ["bbq chicken", 8], ["المتبقي", 8], ["المجموع", 8], ["جوبية زبادو خوخ ٢٢٠ مل", 8], ["viet milk coffee", 7], ["iced tt", 7], ["potato sausage bread", 7], ["جزر", 7], ["الخصم", 7], ["عدد القطع", 7], ["الْمَسْلِمِ بِجَمْعِ الْمَسْلِمِ", 7], ["hot tea", 6], ["es teh manis", 6], ["iced tea", 6], ["choco custard pastry", 6], ["cheese tart", 6], ["es teh tawar", 6], ["فلفل رومي", 6], ["اجمالي الفاتورة", 6], ["الأجمالي", 6], ["التاريخ", 6], ["عَلَى", 6], ["نفدي:", 6], ["موزن خطة صورص الموجبة", 6], ["خمس", 6], ["pkt ayam", 5], ["original brewed tea", 5], ["nutella cheese", 5], ["kfc winger hc", 5], ["egg tart", 5], ["charge ta", 5], ["pain au chocolate", 5], ["lemon tea (l).", 5], ["popcorn salt (m)", 5], ["mineral water (s)", 5], ["nasi goreng", 5], ["lemon tea (l)", 5], ["combo 1", 5], ["salmon pesto", 5], ["air mineral", 5], ["نقدا", 5], ["خدمة توصيل", 5], ["خيار صوب", 5], ["طبة", 5], ["200 جم", 5], ["ختم", 5], ["عدد الأصناف و الإجمالي", 5], ["ice lemon tea", 4], ["ambush dbl chs burg", 4], ["ambush chs burger", 4], ["sate padang", 4], ["round wagyu (1gr)", 4], ["tlj croquette", 4], ["twist orange choco donut", 4], ["extra jelly lychee", 4], ["perkedel", 4], ["royal cheese tart", 4], ["caramel medium", 4], ["pizza toast", 4], ["caramel small", 4], ["sb 1 hc", 4], ["hot tuna", 4], ["تخفيض", 4], ["موزان 90 جد", 4], ["جرام", 4], ["رمان", 4], ["المطلوب", 4], ["لقدى:", 4], ["17.00", 4], ["tea", 3], ["black pepper meatball", 3], ["green tea with crumble", 3], ["earl grey milk tea", 3], ["crispy choco", 3], ["lemper", 3], ["sausage donut", 3], ["large 1", 3], ["wagyu rice box", 3], ["caramel pastry", 3], ["original", 3], ["ganache mousse piece", 3], ["tt", 3], ["twist strawberry donut", 3], ["rice organik", 3], ["choco almond", 3], ["dept01", 3], ["tiramisu cin", 3], ["ayam", 3], ["popcorn salt (s).", 3], ["chocolate twist", 3], ["real chocolate roll", 3], ["nestle 330 ml", 3], ["ocha", 3], ["frankfrut sausage roll", 3], ["premium milk pan bread", 3], ["sausage bread", 3], ["s-fresh lemon lime", 3], ["[riche] black sakura", 3], ["teh tawar", 3], ["manuka honey", 3], ["real ganache", 3], ["xxl crispy chicken", 3], ["extra jelly lychee.", 3], ["[md] soft steamed cheesec", 3], ["custard brioche", 3], ["agsio th pc jmr", 3], ["milk pastry roll", 3], ["seaweed chicken", 3], ["roti", 3], ["chinese te", 3], ["smokebeef + nutea", 3], ["كلوتشا", 3], ["شمام", 3], ["طماطم وزن", 3], ["ضريبة", 3], ["بسطار مه بيا الموزار", 3], ["شريط", 3], ["الاجمالی", 3], ["برتقال بصرة", 3], ["لقدى", 3], ["ليمون", 3], ["إجمالي الضرائب", 3], ["طباق لارج", 3], ["دولفين مفتنة 200 حم", 3], ["1ك", 3], ["إجمالي", 3], ["شوربة لسان عصفور", 3], ["الصافي المتبقي", 3], ["كاندي اسياني", 3], ["شيكلاتة بني خام", 3], ["شایان توڤی", 3], ["مُحَمَّد بطاقة", 3], ["مليئة", 3], ["١ مارعى", 3], ["محمور دفيق", 3], ["مزرع دينا لين 250", 3], ["pepsi", 2], ["tahu goreng", 2], ["tahu telor asin", 2], ["ayam bakar", 2], ["teh panas", 2], ["quarto formanggi pasta", 2], ["rb. coklat bar", 2], ["king deal fish", 2], ["gurame fillet m asam manis", 2], ["bihun goreng jj", 2], ["take away charge", 2], ["chicken hcc, 1pcs", 2], ["arem - arem", 2], ["toblerone bancheese", 2], ["choco puff", 2], ["creamy beef cls ftc", 2], ["new oriental chk rice", 2], ["lipton pitcher", 2], ["sc/p super supreme", 2], ["cb/p black pepp beef", 2], ["gulai otak", 2], ["ayam pop", 2], ["apple creamcheese pastry", 2], ["pastry keju", 2], ["s-ovaltine macchiat", 2], ["bubbles", 2], ["gado-gado", 2], ["cheezemania", 2], ["mamamia", 2], ["kupon 9", 2], ["kupon 1", 2], ["large iced lemon tea", 2], ["pdg madness", 2], ["bct", 2], ["sam da s00 mineral water", 2], ["pillow kombi", 2], ["dept04", 2], ["risol rogut", 2], ["choco chip", 2], ["red velvet", 2], ["peanut & cheese", 2], ["apple pie", 2], ["premium toast pan bread", 2], ["kupon 7", 2], ["crispy apple raisin pastr", 2], ["banana split", 2], ["donatcoklat", 2], ["chocolate soboro", 2], ["coke (l)", 2], ["set menu family", 2], ["king deal cheese burger r", 2], ["oreo green tea spread", 2], ["white choco banana spread", 2], ["cireng pandawa", 2], ["pkt telor/perkedel", 2], ["hot ocha", 2], ["marbled sirloin steak 200gr", 2], ["vanball", 2], ["banana donut", 2], ["carbonara", 2], ["fl-xmas 30 off", 2], ["teh tawar dingin", 2], ["peach pastry", 2], ["fanta stwbry (l)", 2], ["cumi gr junjan", 2], ["lychee ice tea", 2], ["nestle 600 m1", 2], ["mineral water (s).", 2], ["chocolate sundae", 2], ["regular fries", 2], ["takeaway charge", 2], ["chocolate milk shake", 2], ["t. tarik greentea dingin", 2], ["blend gt (m)", 2], ["custard soboro", 2], ["medium tub", 2], ["aop seafood", 2], ["omurice katsu curry", 2], ["earl gray tea", 2], ["xxi java tea spc", 2], ["tahu ikan oma giok", 2], ["cf nasi putih", 2], ["cranberry walnut (s)", 2], ["black cheese hotdog", 2], ["trad ky toast carte", 2], ["gong gibab", 2], ["bo ssam", 2], ["haemul denjang jjigae", 2], ["mocca float", 2], ["es kopi susu pandan", 2], ["honey mandarin", 2], ["pearl (l)", 2], ["lychee float", 2], ["rb. ai-ai choco", 2], ["choco crossiant", 2], ["coronet", 2], ["spooky soboro", 2], ["screaming red bean", 2], ["hulk topper package", 2], ["ocha cold", 2], ["nasi goreng spc", 2], ["ha kaou udng", 2], ["sio may kpting", 2], ["h n cheesy chic", 2], ["k.chees chic rc", 2], ["moca flt ovltin", 2], ["ffries large", 2], ["pocai bwg putih", 2], ["yifumi", 2], ["hai cmp spc", 2], ["woosam rice r", 2], ["ocha hot", 2], ["chocolate eclair", 2], ["whole wheat pan bread", 2], ["milo", 2], ["kopi cam", 2], ["[md] soft steamed chococa", 2], ["teh kotak", 2]];
+const TOPMERCH=[["metro", 704], ["al rayan", 670], ["carrefour", 660], ["el madina", 650], ["hyper one", 644], ["lulu", 635], ["ragab sons", 630], ["panda", 627], ["go.restaurant", 626], ["bim", 626], ["seoudi", 621], ["kazyon", 621], ["awadallah", 606], ["kheir zaman", 603], ["fathalla", 601], ["spinneys", 571]];
 let BACKEND=localStorage.getItem('demoBackend')||'http://localhost:3000';
 try{const q=new URLSearchParams(location.search);if(q.get('api')){BACKEND=q.get('api');localStorage.setItem('demoBackend',BACKEND)}}catch{}
-const API=()=>BACKEND.replace(/\/$/,'')+'/api';let file;let cur=null,curId=null,curVia=null;
+const API=()=>BACKEND.replace(/\/$/,'')+'/api';
+let file=null,cur=null,curId=null,curVia=null;
 document.getElementById('be').value=BACKEND;
 function saveBe(){BACKEND=document.getElementById('be').value.trim()||BACKEND;localStorage.setItem('demoBackend',BACKEND);health()}
-const drop=document.getElementById('drop'),fi=document.getElementById('f');
+const drop=document.getElementById('drop'),fi=document.getElementById('f'),goBtn=document.getElementById('go');
 ['dragover','dragenter'].forEach(e=>drop.addEventListener(e,ev=>{ev.preventDefault();drop.classList.add('over')}));
 ['dragleave','drop'].forEach(e=>drop.addEventListener(e,ev=>{ev.preventDefault();drop.classList.remove('over')}));
 drop.addEventListener('drop',ev=>{setFile(ev.dataTransfer.files[0])});
 fi.onchange=e=>setFile(e.target.files[0]);
-function setFile(f){const st=document.getElementById('st');try{if(!f){st.textContent='No file picked — try again.';return}const okType=(f.type||'').startsWith('image/');const okExt=/\.(jpe?g|png|webp|gif|bmp|heic|heif)$/i.test(f.name||'');if(!okType&&!okExt&&f.size>0){st.textContent='Picked "'+(f.name||'file')+'" but it may not be an image — trying anyway…'}else if(!okType&&!okExt){st.textContent='That file looks empty — pick a receipt photo.';fi.value='';return}file=f;const pv=document.getElementById('pv');pv.src=URL.createObjectURL(f);pv.style.display='block';pv.onerror=()=>{st.textContent='Preview failed but file was picked ('+Math.round(f.size/1024)+'KB) — hit Scan anyway.'};document.getElementById('dropLabel').textContent=(f.name||'receipt photo')+' ('+Math.round(f.size/1024)+'KB) — tap to change';st.textContent='Ready — hit Scan receipt.'}catch(e){st.textContent='Picker error: '+e.message}}
+function setFile(f){
+const st=document.getElementById('st');
+try{
+if(!f){st.textContent='No file picked — try again.';return}
+const okType=(f.type||'').startsWith('image/');
+const okExt=/\.(jpe?g|png|webp|gif|bmp|heic|heif)$/i.test(f.name||'');
+if(!okType&&!okExt&&f.size>0){st.textContent='Picked "'+(f.name||'file')+'" — type unclear, trying anyway…'}
+else if(!okType&&!okExt){st.textContent='That file looks empty — pick a receipt photo.';fi.value='';return}
+file=f;
+const pv=document.getElementById('pv');
+pv.src=URL.createObjectURL(f);pv.style.display='block';
+pv.onerror=()=>{st.textContent='Preview failed but file was picked ('+Math.round(f.size/1024)+'KB) — hit Scan anyway.'};
+document.getElementById('dropLabel').textContent=(f.name||'receipt photo')+' ('+Math.round(f.size/1024)+'KB) — tap to change';
+st.textContent='Ready — hit Scan receipt.';
+goBtn.disabled=false;goBtn.textContent='Scan receipt';
+}catch(e){st.textContent='Picker error: '+e.message}
+}
 function step(n){[1,2,3].forEach(i=>document.getElementById('s'+i).classList.toggle('on',i<=n))}
 async function health(){try{const r=await fetch(BACKEND.replace(/\/$/,'')+'/health');document.getElementById('conn').textContent=r.ok?'backend connected':'backend down — browser OCR will be used';}catch{document.getElementById('conn').textContent='backend down — browser OCR will be used'}}
 health();setInterval(health,5000);
-function hist(id){const h=JSON.parse(localStorage.getItem('demoSaved')||'[]');if(id){h.unshift({at:new Date().toLocaleString(),id});localStorage.setItem('demoSaved',JSON.stringify(h.slice(0,12)))}document.getElementById('hist').innerHTML=h.map(x=>`<span class="pill">${String(x.id).slice(0,14)}… · ${x.at}</span>`).join('')||'<span style="font-size:12px;color:#999">nothing saved yet</span>'}
+function hist(id){
+const h=JSON.parse(localStorage.getItem('demoSaved')||'[]');
+if(id){h.unshift({at:new Date().toLocaleString(),id});localStorage.setItem('demoSaved',JSON.stringify(h.slice(0,12)))}
+document.getElementById('hist').innerHTML=h.map(x=>'<span class="pill">'+String(x.id).slice(0,14)+'… · '+x.at+'</span>').join('')||'<span class="mut">nothing saved yet</span>';
+}
 hist();
 function lev(a,b){const m=a.length,n=b.length;const dp=Array.from({length:m+1},()=>Array(n+1).fill(0));for(let i=0;i<=m;i++)dp[i][0]=i;for(let j=0;j<=n;j++)dp[0][j]=j;for(let i=1;i<=m;i++)for(let j=1;j<=n;j++)dp[i][j]=a[i-1]===b[j-1]?dp[i-1][j-1]:1+Math.min(dp[i-1][j],dp[i][j-1],dp[i-1][j-1]);return dp[m][n]}
-function fixName(s){try{const low=String(s).toLowerCase().trim();if(low.length<3)return s;let best=null,bd=99,bf=0;for(const p of TOPNAMES){const n=p[0],f=p[1];if(f<3)continue;if(n===low)return s;const d=lev(low,n);if(d<=2&&(d<bd||(d===bd&&f>bf))){bd=d;bf=f;best=n}}if(best&&best!==low)return {name:best[0].toUpperCase()+best.slice(1),fixed:true};return {name:s,fixed:false}}catch(e){return {name:s,fixed:false}}}
-const TOPMERCH=[["metro", 704], ["al rayan", 670], ["carrefour", 660], ["el madina", 650], ["hyper one", 644], ["lulu", 635], ["ragab sons", 630], ["panda", 627], ["go.restaurant", 626], ["bim", 626], ["seoudi", 621], ["kazyon", 621], ["awadallah", 606], ["kheir zaman", 603], ["fathalla", 601], ["spinneys", 571]];
+function fixName(s){try{const low=String(s).toLowerCase().trim();if(low.length<3)return {name:s,fixed:false};let best=null,bd=99,bf=0;for(const p of TOPNAMES){const n=p[0],f=p[1];if(f<3)continue;if(n===low)return {name:s,fixed:false};const d=lev(low,n);if(d<=2&&(d<bd||(d===bd&&f>bf))){bd=d;bf=f;best=n}}if(best&&best!==low)return {name:best[0].toUpperCase()+best.slice(1),fixed:true};return {name:s,fixed:false}}catch(e){return {name:s,fixed:false}}}
 function fixMerch(s){try{const low=String(s||'').toLowerCase().trim();if(low.length<3)return s;for(const p of TOPMERCH){if(p[0]===low)return s}let best=null,bd=99,bf=0;for(const p of TOPMERCH){const n=p[0],f=p[1];if(f<2)continue;const d=lev(low,n);if(d<=2&&(d<bd||(d===bd&&f>bf))){bd=d;bf=f;best=n}}return best||s}catch(e){return s}}
 async function via_backend(fd){
 const ctl=new AbortController();const to=setTimeout(()=>ctl.abort(),6000);
@@ -108,6 +137,22 @@ const d=await(await fetch(API()+'/receipts/'+id,{headers:{'x-user-id':'user_demo
 if(d.status&&d.status!=='processing')return {d,id,via:'server'};}
 throw new Error('server timed out');
 }finally{clearTimeout(to)}
+}
+function padFile(f){
+return new Promise((res,rej)=>{
+const img=new Image();
+img.onload=()=>{
+try{
+const m=Math.max(20,Math.round(Math.min(img.width,img.height)*0.06));
+const c=document.createElement('canvas');c.width=img.width+2*m;c.height=img.height+2*m;
+const x=c.getContext('2d');x.fillStyle='#ffffff';x.fillRect(0,0,c.width,c.height);
+x.drawImage(img,m,m);
+c.toBlob(b=>b?res(b):rej(new Error('pad failed')),'image/png');
+}catch(e){rej(e)}
+};
+img.onerror=()=>rej(new Error('decode failed'));
+img.src=URL.createObjectURL(f);
+});
 }
 function parseLocal(text){
 const lines=text.split('\n').map(l=>l.trim()).filter(Boolean);
@@ -132,14 +177,15 @@ return {merchant,total,currency:'EGP',items,rawText:text,confidence:0.8,status:'
 }
 async function scanLocal(st){
 st.innerHTML='No server — <b>real OCR in your browser</b> (tesseract.js)…';
-const {data:{text}}=await Tesseract.recognize(file,'eng+ara');
+const input=await padFile(file).catch(()=>file);
+const {data:{text}}=await Tesseract.recognize(input,'eng+ara');
 return {d:parseLocal(text),id:'local_'+Date.now().toString(36),via:'browser-ocr'};
 }
-function pct(x){return x===null||x===undefined?'':(' · '+Math.round(x*100)+'%')}
+function pct(x){return (x===null||x===undefined)?'':' · '+Math.round(x*100)+'%'}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
 function render(){
 const d=cur;if(!d)return;
 document.getElementById('eM').value=d.merchant||'';
-const ec=document.getElementById('eC');if(d.currency&&[...ec.options].some(o=>o.value===d.currency))ec.value=d.currency;
 document.getElementById('cM').textContent='merchant'+pct(d.merchantConfidence);
 document.getElementById('rT').textContent=(d.total??'–')+' '+(d.currency||'EGP');
 document.getElementById('cT').textContent='total'+pct(d.totalConfidence);
@@ -147,7 +193,8 @@ document.getElementById('rS').textContent=(d.subtotal??'–');
 document.getElementById('rX').textContent='tax '+(d.tax??'–')+' / disc '+(d.discount??'–');
 document.getElementById('rP').textContent=d.paymentMethod||'–';
 document.getElementById('rD').textContent=(((d.date||'')+' '+(d.time||'')).trim()||'–')+' · '+(d.status||'');
-document.getElementById('rItems').innerHTML=(d.items||[]).map((it,i)=>`<tr><td><input class="ed" value="${String(it.name).replace(/"/g,'&quot;')}" oninput="editItem(${i},'name',this.value)"/>${it.fixed?' <span class="fix">auto-fixed</span>':''}</td><td><input class="ed" type="number" min="1" value="${it.quantity}" oninput="editItem(${i},'quantity',this.value)"/></td><td><input class="ed" type="number" min="0" step="0.01" value="${it.totalPrice}" oninput="editItem(${i},'totalPrice',this.value)"/></td><td><button class="xbtn" onclick="delItem(${i})">✕</button></td></tr>`).join('')||'<tr><td colspan=4>no items</td></tr>';
+const ec=document.getElementById('eC');if(d.currency&&[...ec.options].some(o=>o.value===d.currency))ec.value=d.currency;
+document.getElementById('rItems').innerHTML=(d.items||[]).map((it,i)=>'<tr><td><input class="ed" value="'+esc(it.name)+'" oninput="editItem('+i+',\'name\',this.value)"/>'+(it.fixed?' <span class="fix">auto-fixed</span>':'')+'</td><td><input class="ed" type="number" min="1" value="'+it.quantity+'" oninput="editItem('+i+',\'quantity\',this.value)"/></td><td><input class="ed" type="number" min="0" step="0.01" value="'+it.totalPrice+'" oninput="editItem('+i+',\'totalPrice\',this.value)"/></td><td><button class="xbtn" onclick="delItem('+i+')">✕</button></td></tr>').join('')||'<tr><td colspan=4>no items</td></tr>';
 document.getElementById('rOcr').textContent=((d.ocr&&d.ocr.rawText)||d.rawText)||'';
 }
 function editHead(k,v){if(cur)cur[k]=v}
@@ -161,7 +208,7 @@ try{
 if(curVia==='server'){
 const r=await fetch(API()+'/receipts/'+curId,{method:'PATCH',headers:{'Content-Type':'application/json','x-user-id':'user_demo'},body:JSON.stringify({merchant:cur.merchant,currency:cur.currency,items:cur.items.map(it=>({name:it.name,quantity:parseInt(it.quantity)||1,unitPrice:(parseFloat(it.totalPrice)||0)/(parseInt(it.quantity)||1),totalPrice:parseFloat(it.totalPrice)||0})),total:cur.total,status:'completed'})});
 if(!r.ok)throw new Error('save '+r.status);
-msg.innerHTML='<span class="ok">Saved to backend — and learned for next scans.</span>';
+msg.innerHTML='<span class="ok">Saved to backend — learned for next scans.</span>';
 }else{
 const h=JSON.parse(localStorage.getItem('demoCorrections')||'[]');h.unshift({at:new Date().toISOString(),id:curId,data:cur});localStorage.setItem('demoCorrections',JSON.stringify(h.slice(0,20)));
 msg.innerHTML='<span class="ok">Saved in this browser.</span>';
@@ -169,25 +216,30 @@ msg.innerHTML='<span class="ok">Saved in this browser.</span>';
 }catch(e){msg.innerHTML='<span class="err">Save failed: '+e.message+'</span>'}
 }
 async function scan(){
-if(!file)return alert('Choose a receipt image first');
-const go=document.getElementById('go'),st=document.getElementById('st');
-go.disabled=true;go.innerHTML='<span class="spin"></span> Scanning…';step(1);
+if(!file)return;
+goBtn.disabled=true;goBtn.innerHTML='<span class="spin"></span> Scanning…';step(1);
 document.getElementById('savMsg').textContent='';
+const t0=Date.now();
 try{
 const fd=new FormData();fd.append('image',file);
 let d,id,via;
-try{({d,id,via}=await via_backend(fd));st.innerHTML='<span class="ok">Server did the OCR (full 12k training).</span>'}
-catch(e){({d,id,via}=await scanLocal(st))}
+try{({d,id,via}=await via_backend(fd));st_ok('Server did the OCR (full 12k training).')}
+catch(e){({d,id,via}=await scanLocal(st_el()))}
 cur=d;curId=id;curVia=via;step(2);
+document.getElementById('engBadge').textContent=via==='server'?'⚡ server · 12k training':'📱 browser OCR · built-in training';
+document.getElementById('timeLine').textContent='Scanned in '+((Date.now()-t0)/1000).toFixed(1)+'s';
 document.getElementById('resCard').style.display='block';
 render();
 document.getElementById('saveCard').style.display='block';
 document.getElementById('rSaved').textContent='Saved as '+id+(via==='browser-ocr'?' (in this browser — start the server for backend training)':'');
-hist(id);step(3);st.innerHTML='<span class="ok">Done — result shown and saved.</span>';
+hist(id);step(3);st_ok('Done — result shown and saved.');
 document.getElementById('resCard').scrollIntoView({behavior:'smooth'});
-}catch(e){st.innerHTML='<span class="err">Error: '+e.message+'</span>'}
-go.disabled=false;go.textContent='Scan receipt';
+}catch(e){st_err('Error: '+e.message)}
+goBtn.disabled=false;goBtn.textContent='Scan receipt';
 }
+function st_el(){return document.getElementById('st')}
+function st_ok(t){st_el().innerHTML='<span class="ok">'+t+'</span>'}
+function st_err(t){st_el().innerHTML='<span class="err">'+t+'</span>'}
 </script>
 </body>
 </html>
